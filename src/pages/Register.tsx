@@ -87,6 +87,9 @@ function Register() {
     console.log("Correo:", email);
 
     //SI HAY BRONCAS, PONES EL AWAIT Y VES COMO LO ARREGLAS
+
+    
+
     const hash = await hashPassword(password);
 
     console.log("Contraseña hasheada:", hash);
@@ -98,13 +101,18 @@ function Register() {
     setEmail("");
     setPassword("");
     setPasswordConfirmation("");
+    //creando un ro
+    const rol = "operativo";
+    const fechaActual: Date = new Date();
 
     //SIMULANDO EL ENVIO A JSONPLACEHOLDER PARA ENVIAR AL SERVIDOR
     try {
-      const response = await axios.post(`${apiUrl}api/registro/`, {
-        name,
-        email,
-        password: hash,
+      const response = await axios.post(`${apiUrl}api/usuarios/`, {
+        nombre: name,
+        correo: email,
+        contraseña_hash: hash,
+        rol,
+        fechaActual,
       });
 
       console.log("Respuesta simulada con Axios:", response.data);
@@ -116,14 +124,30 @@ function Register() {
         </div>,
         { position: "top-right" }
       );
-    } catch (error) {
-      console.error("Error al enviar datos con Axios:", error);
-      toast.error(
-        <div style={{ fontSize: "1.5rem", color: "red" }}>
-          Error al conectar con el servidor
-        </div>,
-        { position: "top-right" }
-      );
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error("Código de error:", error.response.status);
+        console.error(
+          "Mensaje de error:",
+          error.response.data?.message || error.response.data
+        );
+
+        toast.error(
+          <div style={{ fontSize: "1.5rem", color: "red" }}>
+            Error {error.response.status}:{" "}
+            {error.response.data?.message || "Error del servidor"}
+          </div>,
+          { position: "top-right" }
+        );
+      } else {
+        console.error("Error desconocido:", error);
+        toast.error(
+          <div style={{ fontSize: "1.5rem", color: "red" }}>
+            Error inesperado al enviar datos
+          </div>,
+          { position: "top-right" }
+        );
+      }
     }
   };
 
