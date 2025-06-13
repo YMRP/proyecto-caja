@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { hashPassword } from "../utils/auth";
 import axios from "axios";
 
+const apiUrl = import.meta.env.VITE_URL_BACKEND;
 function Register() {
   //INICIALIZANDO USESTATES
 
@@ -81,8 +82,6 @@ function Register() {
       return;
     }
 
-    
-
     //Aquí imprimimos los valores
     console.log("Nombre:", name);
     console.log("Correo:", email);
@@ -100,28 +99,23 @@ function Register() {
     setPassword("");
     setPasswordConfirmation("");
 
-    //SIMULANDO EL ENVIO A JSONPLACEHOLDER PARA ENVIAR AL SERVIDOR 
+    //SIMULANDO EL ENVIO A JSONPLACEHOLDER PARA ENVIAR AL SERVIDOR
     try {
-      const response = await axios.post(
-        "https://jsonplaceholder.typicode.com/posts",
-        {
-          name,
-          email,
-          password: hash,
-        }
-      );
+      const response = await axios.post(`${apiUrl}api/registro/`, {
+        name,
+        email,
+        password: hash,
+      });
 
       console.log("Respuesta simulada con Axios:", response.data);
 
-    
-
-      console.log("DATOS ENVIADOS CON AXIOS EXITOSAMENTE")
+      console.log("DATOS ENVIADOS CON AXIOS EXITOSAMENTE");
       toast.success(
-      <div style={{ fontSize: "1.5rem", color: "green" }}>
-        Registro exitoso
-      </div>,
-      { position: "top-right" }
-    );
+        <div style={{ fontSize: "1.5rem", color: "green" }}>
+          Registro exitoso
+        </div>,
+        { position: "top-right" }
+      );
     } catch (error) {
       console.error("Error al enviar datos con Axios:", error);
       toast.error(
