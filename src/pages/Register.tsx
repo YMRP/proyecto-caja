@@ -7,105 +7,68 @@ import { hashPassword } from "../utils/auth";
 import axios from "axios";
 
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
-function Register() {
-  //INICIALIZANDO USESTATES
 
+function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
-  //GUARDANDO LO QUE TENGAN EN LOS CAMPOS
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-  };
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value);
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
+  const handlePasswordConfirmationChange = (e: React.ChangeEvent<HTMLInputElement>) => setPasswordConfirmation(e.target.value);
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
-
-  const handlePasswordConfirmationChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setPasswordConfirmation(e.target.value);
-  };
-
-  //FUNCION DE VALIDACION DE LOS CAMPOS
   const validation = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.preventDefault();
 
     if (!name || !email || !password || !passwordConfirmation) {
-      toast.error(
-        <div style={{ fontSize: "1.5rem", color: "red" }}>
-          Existen campos vacios
-        </div>,
-        { position: "top-right" }
-      );
+      toast.error(<div style={{ fontSize: "1.5rem", color: "red" }}>Existen campos vacíos</div>, { position: "top-right" });
       return;
     }
 
     if (password.length < 8) {
-      toast.error(
-        <div style={{ fontSize: "1.5rem", color: "red" }}>
-          La contraseña debe tener al menos 8 caracteres
-        </div>,
-        { position: "top-right" }
-      );
+      toast.error(<div style={{ fontSize: "1.5rem", color: "red" }}>La contraseña debe tener al menos 8 caracteres</div>, { position: "top-right" });
       return;
     }
 
     if (password !== passwordConfirmation) {
+      toast.error(<div style={{ fontSize: "1.5rem", color: "red" }}>Las contraseñas no coinciden</div>, { position: "top-right" });
+      return;
+    }
+
+    if (!email.endsWith("@cajatlajomulco.com.mx") && !email.endsWith("@cajatlajomulco.com")) {
+      toast.error(<div style={{ fontSize: "1.5rem", color: "red" }}>Dirección de correo no válida</div>, { position: "top-right" });
+      return;
+    }
+
+    // Validar si el correo ya existe usando response.data.existe
+    try {
+      const response = await axios.get(`${apiUrl}api/validar-usuario/`, {
+        params: { correo: email },
+      });
+
+      if (response.data?.existe) {
+        toast.error(
+          <div style={{ fontSize: "1.5rem", color: "red" }}>El correo ya está registrado</div>,
+          { position: "top-right" }
+        );
+        return;
+      }
+    } catch (error) {
+      console.error("Error al validar correo:", error);
       toast.error(
-        <div style={{ fontSize: "1.5rem", color: "red" }}>
-          Las contraseñas no coinciden
-        </div>,
+        <div style={{ fontSize: "1.5rem", color: "red" }}>Error al validar el correo</div>,
         { position: "top-right" }
       );
       return;
     }
 
-    //validacion del correo
-    if (
-      !email.endsWith("@cajatlajomulco.com.mx") &&
-      !email.endsWith("@cajatlajomulco.com")
-    ) {
-      toast.error(
-        <div style={{ fontSize: "1.5rem", color: "red" }}>
-          Dirección de correo no valida
-        </div>,
-        { position: "top-right" }
-      );
-      return;
-    }
-
-    //Aquí imprimimos los valores
-    console.log("Nombre:", name);
-    console.log("Correo:", email);
-
-    //SI HAY BRONCAS, PONES EL AWAIT Y VES COMO LO ARREGLAS
-
-    
-
+    // Si pasó la validación, registrar al usuario
     const hash = await hashPassword(password);
-
-    console.log("Contraseña hasheada:", hash);
-    // console.log("Contraseña hasheada: ", hashPassword(password))
-    // console.log("Confirmación de contraseña:", passwordConfirmation);
-
-    //limpiando campos
-    setName("");
-    setEmail("");
-    setPassword("");
-    setPasswordConfirmation("");
-    //creando un ro
     const rol = "operativo";
     const fechaActual: Date = new Date();
 
-    //SIMULANDO EL ENVIO A JSONPLACEHOLDER PARA ENVIAR AL SERVIDOR
     try {
       const response = await axios.post(`${apiUrl}api/usuarios/`, {
         nombre: name,
@@ -115,38 +78,32 @@ function Register() {
         fechaActual,
       });
 
-      console.log("Respuesta simulada con Axios:", response.data);
+      console.log("Registro exitoso:", response.data);
 
-      console.log("DATOS ENVIADOS CON AXIOS EXITOSAMENTE");
-      toast.success(
-        <div style={{ fontSize: "1.5rem", color: "green" }}>
-          Registro exitoso
-        </div>,
-        { position: "top-right" }
-      );
+      toast.success(<div style={{ fontSize: "1.5rem", color: "green" }}>Registro exitoso</div>, {
+        position: "top-right",
+      });
+
+      setName("");
+      setEmail("");
+      setPassword("");
+      setPasswordConfirmation("");
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error("Código de error:", error.response.status);
-        console.error(
-          "Mensaje de error:",
-          error.response.data?.message || error.response.data
-        );
+        const status = error.response.status;
+        const message = error.response.data?.message || error.response.data;
 
         toast.error(
           <div style={{ fontSize: "1.5rem", color: "red" }}>
-            Error {error.response.status}:{" "}
-            {error.response.data?.message || "Error del servidor"}
+            Error {status}: {message || "Error del servidor"}
           </div>,
           { position: "top-right" }
         );
       } else {
-        console.error("Error desconocido:", error);
-        toast.error(
-          <div style={{ fontSize: "1.5rem", color: "red" }}>
-            Error inesperado al enviar datos
-          </div>,
-          { position: "top-right" }
-        );
+        console.error("Error inesperado al registrar:", error);
+        toast.error(<div style={{ fontSize: "1.5rem", color: "red" }}>Error inesperado al enviar datos</div>, {
+          position: "top-right",
+        });
       }
     }
   };
@@ -155,9 +112,8 @@ function Register() {
     <div className="contenedor">
       <div className="loginContenedor">
         <img src="../src/assets/images/logo.jpg" alt="Logo Caja" />
-        <h1>Registrate</h1>
-        <form action="">
-          {/* nombre */}
+        <h1>Regístrate</h1>
+        <form>
           <div className="campoGrupo">
             <label htmlFor="campoNombre">Nombre: </label>
             <input
@@ -170,7 +126,6 @@ function Register() {
             />
           </div>
 
-          {/* correo */}
           <div className="campoGrupo">
             <label htmlFor="campoEmail">Correo: </label>
             <input
@@ -183,7 +138,6 @@ function Register() {
             />
           </div>
 
-          {/* Contraseña */}
           <div className="campoGrupo">
             <label htmlFor="campoPassword">Contraseña: </label>
             <input
@@ -196,11 +150,8 @@ function Register() {
             />
           </div>
 
-          {/* Repetir contraseña */}
           <div className="campoGrupo">
-            <label htmlFor="campoPasswordConfirm">
-              Reescribe tu contraseña:{" "}
-            </label>
+            <label htmlFor="campoPasswordConfirm">Reescribe tu contraseña:</label>
             <input
               type="password"
               placeholder="Tu Contraseña"
@@ -211,18 +162,10 @@ function Register() {
             />
           </div>
 
-          {/* boton Registrar */}
-          <Button
-            type="submit"
-            text="Registrar"
-            onClick={validation}
-            id="buttonRegister"
-          />
+          <Button type="submit" text="Registrar" onClick={validation} id="buttonRegister" />
         </form>
 
-        <p>
-          ¿Ya tienes una cuenta? <Link to="/">inicia sesión aquí</Link>
-        </p>
+        <p>¿Ya tienes una cuenta? <Link to="/">Inicia sesión aquí</Link></p>
       </div>
     </div>
   );
