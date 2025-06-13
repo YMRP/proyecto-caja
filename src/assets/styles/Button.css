@@ -1,0 +1,18 @@
+button{
+    
+    cursor: pointer;
+    border: none;
+    width: 40%;
+    align-self: center;
+    padding: 1rem;
+    background-color: var(--oliveGreen);
+    color: white;
+    transition: 200ms;
+
+}
+
+button:hover{
+    background-color: var(--lightenGreen);
+    transition: 200ms;
+
+}
