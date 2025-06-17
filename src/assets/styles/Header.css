@@ -1,0 +1,14 @@
+header {
+  width: 100%;
+  background-color: var(--darkGreen);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+
+nav{
+  display: flex;
+  gap: 1rem;
+}

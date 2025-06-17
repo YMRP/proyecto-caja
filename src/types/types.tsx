@@ -5,6 +5,10 @@ export type ButtonType = {
      id?: string
 }
 
+export type navElement = {
+  href: string;
+  value: string;
+};
 // export type FieldsGroup = {
 //     text : string
 //     type:"email" | "text" | "password" | string
