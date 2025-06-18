@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
 import axios from "axios";
-
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 
 function Register() {
@@ -110,7 +109,7 @@ function Register() {
       const response = await axios.post(`${apiUrl}api/usuarios/`, {
         nombre: name,
         correo: email,
-        contraseña_hash: password,
+        password: password,
         rol,
         fechaActual,
       });
@@ -136,7 +135,13 @@ function Register() {
 
       if (axios.isAxiosError(error) && error.response) {
         const status = error.response.status;
-        const message = error.response.data?.message || error.response.data;
+        const data = error.response.data;
+        const message =
+          typeof data === "string"
+            ? data
+            : typeof data.message === "string"
+            ? data.message
+            : JSON.stringify(data);
 
         toast.error(
           <div style={{ fontSize: "1.5rem", color: "red" }}>

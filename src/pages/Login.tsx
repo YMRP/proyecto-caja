@@ -1,15 +1,16 @@
 import "../assets/styles/Login.css";
 import Button from "../components/Button";
 // import FieldGroup from "../components/FieldGroup";
-import {Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import React, { useState } from "react";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
-
-
+import.meta.env.JWT_SECRET_KEY;
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();
 
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -22,8 +23,6 @@ function Login() {
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
-
-  
 
   const loginValidation = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.preventDefault();
@@ -65,27 +64,34 @@ function Login() {
         contraseña: password,
       });
 
-      
+      toast.dismiss(loadingToast);
+
       if (response.data.login) {
-              toast.dismiss(loadingToast);
-        // Login exitoso
-        // Redirige o guarda token, etc.
-        toast.success(<div style={{ fontSize: "1.5rem", color: "green" }}>
-          {response.data.mensaje}
-        </div>,
-        { position: "top-right" });
+        // Guarda el token y los datos del usuario
+        localStorage.setItem("access", response.data.access);
+        localStorage.setItem("refresh", response.data.refresh); // ⬅️ ESTA ES LA CLAVE
+        localStorage.setItem("usuario", JSON.stringify(response.data.usuario));
+
+        toast.success(
+          <div style={{ fontSize: "1.5rem", color: "green" }}>
+            {response.data.mensaje}
+          </div>,
+          { position: "top-right" }
+        );
+
+        // Redirige a /home
+        navigate("/home");
       } else {
-
-              toast.dismiss(loadingToast);
-
-        // Login fallido, muestra el mensaje del backend
-        toast.error(<div style={{ fontSize: "1.5rem", color: "red" }}>
-          {response.data.mensaje}
+        toast.dismiss(loadingToast);
+        toast.error(
+        <div style={{ fontSize: "1.5rem", color: "red" }}>
+          No se pudo conectar con el servidor
         </div>,
-        { position: "top-right" });
+        { position: "top-right" }
+      );
       }
     } catch (error) {
-            toast.dismiss(loadingToast);
+      toast.dismiss(loadingToast);
 
       // Solo se ejecuta si hay un error de red o el servidor está caído
       toast.error("No se pudo conectar con el servidor.");

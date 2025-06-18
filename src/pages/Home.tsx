@@ -5,8 +5,9 @@ function Home() {
     <div>
       <Header/>
 
+      
       <div className="contenedor__home">
-            HOLA  MUNDO
+            
       </div>
     </div>
   )
