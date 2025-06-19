@@ -1,21 +1,14 @@
 import "../assets/styles/Header.css";
 import Button from "./Button";
 import NavElement from "./NavElement";
-const apiUrl = import.meta.env.VITE_URL_BACKEND;
-
 import api from "../api/axios";
+import { accessWithoutToken } from "../utils/NoToken";
 
 function Header() {
   const cerrarSesion = async () => {
-    const accessToken = localStorage.getItem("access");
-    if (!accessToken) {
-      localStorage.clear();
-      window.location.href = "/login";
-      return;
-    }
-     try {
-      
-      await api.post("api/cerrar-sesion/"); // headers se añaden automáticamente
+    accessWithoutToken();
+    try {
+      await api.post("api/cerrar-sesion/");
       console.log("Access token:", localStorage.getItem("access"));
 
       localStorage.clear();
@@ -36,11 +29,17 @@ function Header() {
           alt="Logo"
           src="../src/assets/images/logo.jpg"
         />
+
         <nav>
           <NavElement href="#" value="OPCION 1" />
           <NavElement href="#" value="OPCION 2" />
           <NavElement href="#" value="OPCION 3" />
           <Button text="Cerrar Sesión" onClick={cerrarSesion} />
+          <img
+            src="https://robohash.org/1"
+            alt="Foto usuario"
+            className="fotoUsuario"
+          />
         </nav>
       </header>
     </>

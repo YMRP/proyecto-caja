@@ -6,9 +6,17 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
+  height: 10rem;
 }
 
 nav{
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.fotoUsuario{
+  height: 4rem;
+  border:  solid black;
+  border-radius: 3rem;
 }
