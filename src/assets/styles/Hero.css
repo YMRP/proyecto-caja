@@ -1,0 +1,14 @@
+.hero {
+    display: flex;
+    align-items: center;
+    min-height: 20rem;
+    width: 100%;
+    padding-left: 3rem;
+    padding-right: 3rem;
+background-color: var(--oliveGreen);
+}
+
+.spanHero {
+    color: white;
+    font-size: 700;
+}

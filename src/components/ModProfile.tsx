@@ -1,18 +1,37 @@
 import axios from "axios";
-import { useState} from "react";
+import { useState, useEffect } from "react";
 import type { ChangeEvent } from "react";
-
-
 
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 
 export function ModProfile() {
-
-
-  const [nombre, setNombre] = useState("NuevoNombre");
-  const [password, setPassword] = useState("123456");
+  const [nombre, setNombre] = useState("");
+  const [password, setPassword] = useState("");
   const [file, setFile] = useState<File | null>(null);
+
   const accessToken = localStorage.getItem("access");
+
+  // Obtener datos del usuario al montar el componente
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}api/obtener-perfil/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const userData = response.data;
+        console.log(userData)
+        setNombre(userData.nombre || "");
+        setPassword(""); // No se recomienda mostrar el password
+        // El archivo de imagen no se carga aquí, solo se muestra si tú lo haces aparte
+      } catch (error: any) {
+        console.error("Error al obtener los datos del usuario:", error.message);
+      }
+    };
+
+    fetchUserData();
+  }, [accessToken]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -41,7 +60,6 @@ export function ModProfile() {
   };
 
   return (
-    <>
     <div className="contenedorPerfil">
       <h2>Editar Perfil</h2>
       <input
@@ -56,14 +74,9 @@ export function ModProfile() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <input
-        type="file"
-        onChange={handleFileChange}
-      />
+      <input type="file" onChange={handleFileChange} />
       <button onClick={modUser}>Actualizar Perfil</button>
     </div>
-    </>
-    
   );
 }
 

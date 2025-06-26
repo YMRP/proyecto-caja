@@ -1,0 +1,31 @@
+
+
+.tituloUsuarios{
+    display: flex;
+    font-size: 3rem;
+    align-items: center;
+
+}
+
+.tablaUsuarios{
+    
+    font-size: 6rem;
+    border: solid black ;
+}
+
+.tablaUsuarios:last-child{
+    margin-bottom: 3rem;
+}
+
+.tablaUsuarios th:first-of-type{
+    width: 10%;
+}
+th, td{
+    border: solid 1px;
+}
+
+.layout{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

@@ -1,10 +1,14 @@
 import "../assets/styles/Header.css";
-import Button from "./Button";
 import NavElement from "./NavElement";
 import api from "../api/axios";
-import { accessWithoutToken } from "../utils/NoToken";
+import { accessWithoutToken } from "../utils/noToken";
 
 function Header() {
+  accessWithoutToken();
+  function openClose() {
+    const menuDropDown = document.getElementsByClassName("dropDown")[0];
+    menuDropDown.classList.toggle('showMenu')
+  }
   const cerrarSesion = async () => {
     accessWithoutToken();
     try {
@@ -22,27 +26,38 @@ function Header() {
   };
 
   return (
-    <>
+    <div className="contenedorHeader">
       <header>
-        <img
-          className="logo__header"
-          alt="Logo"
-          src="../src/assets/images/logo.jpg"
-        />
+        <a href="/home">
+          <img
+            className="logo__header"
+            alt="Logo"
+            src="../src/assets/images/logo.jpg"
+          />
+        </a>
 
         <nav>
-          <NavElement href="#" value="OPCION 1" />
-          <NavElement href="#" value="OPCION 2" />
-          <NavElement href="#" value="OPCION 3" />
-          <Button text="Cerrar Sesión" onClick={cerrarSesion} />
+          <NavElement href={"/home"} value="INICIO" />
+          <NavElement href={"/users"} value="USUARIOS" />
+          <NavElement href="" value="OPCION 3" />
+
           <img
-            src="https://robohash.org/1"
-            alt="Foto usuario"
+            src="https://robohash.org/201.166.173.114.png"
+            alt="FotoPerfil"
             className="fotoUsuario"
+            onClick={openClose}
           />
         </nav>
       </header>
-    </>
+
+      <div className="dropDown">
+        <a href="/profile">Ajustes de perfil</a>
+
+        <a href="#" onClick={cerrarSesion}>
+          Cerrar sesión
+        </a>
+      </div>
+    </div>
   );
 }
 

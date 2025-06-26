@@ -1,16 +1,15 @@
 import Header from "../components/Header";
 import "../assets/styles/Home.css";
-import { accessWithoutToken } from "../utils/NoToken";
-
-
+import Footer from "../components/Footer";
+import Hero from "../components/Hero";
 function Home() {
-  
-   accessWithoutToken()
   return (
     <div>
       <Header />
+      <Hero />
+      <div className="contenedorHome"></div>
 
-      <div className="contenedor__home"></div>
+      <Footer />
     </div>
   );
 }

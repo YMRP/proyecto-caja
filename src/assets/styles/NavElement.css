@@ -1,3 +1,11 @@
 .navElement{
     color: white;
 }
+
+.navElement:visited{
+    color: white;
+}
+
+.navElement:hover{
+    color: var(--lightenGreen);
+}
