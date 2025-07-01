@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import type { Usuario } from "../types/types";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
-
+import '../assets/styles/GetProfile.css';
 
 export function GetProfile() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -18,7 +18,7 @@ export function GetProfile() {
           },
         });
         setUsuario(response.data);
-        console.log(response.data)
+        console.log(response.data);
       } catch (err: any) {
         console.error("Error al obtener perfil:", err.message);
         setError("No se pudo cargar el perfil del usuario.");
@@ -29,28 +29,31 @@ export function GetProfile() {
   }, [accessToken]);
 
   return (
-    <div className="contenedorPerfil">
-      <h2>Perfil del Usuario</h2>
+    <div className="consultarUsuario">
       {error && <p className="error">{error}</p>}
       {usuario ? (
-        <div>
-          <p><strong>Nombre:</strong> {usuario.nombre}</p>
-          <p><strong>Correo:</strong> {usuario.correo}</p>
-          <p><strong>Rol:</strong> {usuario.rol}</p>
+        <div className="perfil-contenido">
           {usuario.foto_perfil ? (
-            <>
-              <p><strong>Foto de perfil:</strong></p>
-              <img src={usuario.foto_perfil} alt="Foto de perfil" style={{ width: "20rem", borderRadius: "8px" }} />
-            </>
+            <div className="foto-perfil">
+              <img
+                src={usuario.foto_perfil}
+                alt="Foto de perfil"
+                className="imagen-perfil"
+              />
+            </div>
           ) : (
-            <p>Sin foto de perfil</p>
+            <div className="foto-perfil">Sin foto de perfil</div>
           )}
-        <p><strong>Fecha de creación:</strong>  
-  {usuario.fecha_creacion 
-    ? new Date(usuario.fecha_creacion).toLocaleDateString() 
-    : 'Sin fecha'}
-</p>
-
+          <div className="usuarioFields">
+            <p><strong>Nombre:</strong> {usuario.nombre}</p>
+            <p><strong>Correo:</strong> {usuario.correo}</p>
+            <p><strong>Rol:</strong> {usuario.rol}</p>
+            <p><strong>Fecha de creación:</strong>  
+              {usuario.fecha_creacion 
+                ? new Date(usuario.fecha_creacion).toLocaleDateString() 
+                : 'Sin fecha'}
+            </p>
+          </div>
         </div>
       ) : (
         <p>Cargando datos...</p>

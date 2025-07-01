@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import type { ChangeEvent } from "react";
-
+import "../assets/styles/ModProfile.css";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
+import {toast} from 'sonner'
 
 export function ModProfile() {
   const [nombre, setNombre] = useState("");
@@ -21,10 +22,9 @@ export function ModProfile() {
           },
         });
         const userData = response.data;
-        console.log(userData)
+        console.log(userData);
         setNombre(userData.nombre || "");
-        setPassword(""); // No se recomienda mostrar el password
-        // El archivo de imagen no se carga aquí, solo se muestra si tú lo haces aparte
+        setPassword("");
       } catch (error: any) {
         console.error("Error al obtener los datos del usuario:", error.message);
       }
@@ -47,35 +47,51 @@ export function ModProfile() {
     if (file) formData.append("foto_perfil", file);
 
     try {
-      const response = await axios.put(`${apiUrl}api/modificar-perfil/`, formData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      console.log("Perfil actualizado:", response.data);
+      const response = await axios.put(
+        `${apiUrl}api/modificar-perfil/`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+    
+       toast.success(
+          <div style={{ fontSize: "1.5rem", color: "green" }}>
+            {response.data.mensaje}
+          </div>,
+          { position: "top-right" }
+        );
     } catch (e: any) {
       console.error("Error al actualizar perfil:", e.message);
     }
   };
 
   return (
-    <div className="contenedorPerfil">
-      <h2>Editar Perfil</h2>
-      <input
-        type="text"
-        placeholder="Nuevo nombre"
-        value={nombre}
-        onChange={(e) => setNombre(e.target.value)}
-      />
+    <div className="contenedorPerfil editarPerfil">
+      <div className="campo">
+        <label htmlFor="">Nombre: </label>
+        <input
+          type="text"
+          placeholder="Nuevo nombre"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+        />
+      </div>
+      <div className="campo">
+ <label htmlFor="">Contraseña: </label>
       <input
         type="password"
         placeholder="Nueva contraseña"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
+      </div>
+     
       <input type="file" onChange={handleFileChange} />
-      <button onClick={modUser}>Actualizar Perfil</button>
+      <button onClick={modUser} className="modBotonPerfil">Actualizar Perfil</button>
     </div>
   );
 }

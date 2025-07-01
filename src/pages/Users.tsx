@@ -61,17 +61,14 @@ function Users() {
   return (
     <>
       <Header />
-      <HeaderPages text="Usuarios"/>
+      <HeaderPages text="Usuarios" />
       <div className="contenedorHome">
-
         {error && <p className="error">{error}</p>}
 
         <table className="tablaUsuarios">
           <thead>
             <tr>
-              <th>
-                Eliminar
-              </th>
+              <th>Eliminar</th>
               <th>Usuario</th>
             </tr>
           </thead>
@@ -80,13 +77,22 @@ function Users() {
               <tr key={usuario.id}>
                 <td>
                   <Button
-                    text={<TiTrash size={30} />} 
+                    text={<TiTrash size={30} />}
                     onClick={() => eliminarUsuario(usuario.id)}
                     className="botonEliminar"
                   />
                 </td>
-                <td>
-                  <Link to={`/usuario/${usuario.id}`} className="nombreUsuario">
+                <td style={{ paddingLeft: "1rem" }}>
+                  <Link
+                    to={`/usuario/${usuario.id}`}
+                    className="nombreUsuario"
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      height: "100%",
+                      fontSize: "1.8rem"
+                    }}
+                  >
                     {usuario.nombre}
                   </Link>
                 </td>
@@ -94,10 +100,8 @@ function Users() {
             ))}
           </tbody>
         </table>
-        
       </div>
-      <Footer/>
-
+      <Footer />
     </>
   );
 }

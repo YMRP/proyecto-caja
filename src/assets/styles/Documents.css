@@ -1,0 +1,103 @@
+.tablaDocumentos {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.tablaDocumentos th,
+.tablaDocumentos td {
+  border: 1px solid #ccc;
+  padding: 12px;
+  text-align: left;
+  font-size: 1.5rem;
+}
+
+.tablaDocumentos th {
+  background-color: #f2f2f2;
+}
+
+.ver-detalle-link {
+  color: #0077cc;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.document-table-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  font-family: "Segoe UI", sans-serif;
+}
+
+.document-table-container h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.document-table-container h3 {
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.tabla-documento,
+.tabla-versiones {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.tabla-documento td,
+.tabla-versiones td,
+.tabla-versiones th {
+  border: 1px solid #ddd;
+  padding: 12px;
+  font-size: 1.5rem;
+  vertical-align: top;
+
+}
+
+.tabla-documento td:first-child {
+  width: 250px;
+  font-weight: 600;
+  background-color: #f9f9f9;
+}
+
+.tabla-versiones th {
+  background-color: #f1f1f1;
+  font-weight: 600;
+  text-align: left;
+}
+
+.tabla-versiones td a {
+  color: #0066cc;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.tabla-versiones td a:hover {
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
+  .document-table-container {
+    padding: 1rem;
+  }
+
+  .tabla-documento td,
+  .tabla-versiones td,
+  .tabla-versiones th {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+
+  .tabla-documento td:first-child {
+    width: 180px;
+  }
+}

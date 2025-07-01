@@ -1,0 +1,56 @@
+.editarPerfil {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.editarPerfil h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.campo label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--darkGreen);
+}
+
+.campo input[type="text"],
+.campo input[type="password"] {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  font-size: 1.2rem;
+  transition: border-color 0.3s;
+}
+
+.campo input:focus {
+  border-color: green;
+  outline: none;
+}
+
+input[type="file"] {
+  margin: 1rem 0;
+}
+
+.modBotonPerfil{
+  align-self: flex-end;
+}
+
+
+/* Responsive */
+@media (max-width: 600px) {
+  .editarPerfil {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+}

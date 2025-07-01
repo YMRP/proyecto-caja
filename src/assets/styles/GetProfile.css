@@ -1,0 +1,47 @@
+.perfil-contenido {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-top: 1.5rem;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.imagen-perfil {
+  width: 20rem;
+  object-fit: cover;
+}
+
+.usuarioFields {
+  margin-top: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+margin-right: 2rem;
+  gap: 2rem;
+}
+strong{
+    font-size:1.5rem;
+}
+.usuarioFields p {
+  font-size: 1.8rem;
+}
+
+@media (max-width: 768px) {
+  .perfil-contenido {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    
+  }
+
+  .usuarioFields {
+    align-items: center;
+    padding: 1rem;
+    margin-top: 0;
+  }
+}
+
+.consultarUsuario {
+  background-color: var(--lightenGreen);
+  border-radius: 1px;
+}

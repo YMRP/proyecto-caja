@@ -102,9 +102,12 @@ function User() {
         }
       );
 
-      toast.success("Cambios guardados correctamente", {
-        position: "top-right",
-      });
+      toast.success(
+                <div style={{ fontSize: "1.5rem", color: "green" }}>
+                  Cambios guardados correctamente
+                </div>,
+                { position: "top-right" }
+              );
       console.log("Guardado");
     } catch (err: any) {
       toast.error(

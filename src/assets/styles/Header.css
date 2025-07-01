@@ -10,6 +10,7 @@ header {
   overflow: visible;
 }
 
+
 nav {
   display: flex;
   gap: 1.5rem;
@@ -20,8 +21,9 @@ nav {
   cursor: pointer;
   height: 4rem;
   border: solid black;
-  border-radius: 3rem;
+  border-radius: 50rem;
   transition: 200ms;
+  width: 4rem;
 }
 
 .fotoUsuario:hover {
@@ -65,4 +67,40 @@ nav {
 .dropDown a:hover{
   background-color: var(--lightenGreen);
   
+}
+
+@media (max-width: 600px) {
+  header {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  nav {
+   flex-direction: row;
+   justify-content: space-between;
+   
+  }
+
+  .fotoUsuario {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .dropDown {
+    width: 100%;
+    top: calc(100% + 0.5rem); /* debajo del header */
+    right: 0;
+  }
+
+  .contenedorHeader {
+    align-items: center;
+  }
+
+  .logo__header {
+    display: block;
+    width: 100%;
+  }
 }

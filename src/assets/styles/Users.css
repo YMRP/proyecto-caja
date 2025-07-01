@@ -8,24 +8,52 @@
 }
 
 .tablaUsuarios{
-    
+    text-align: center;
     font-size: 6rem;
-    border: solid black ;
+    width: 50%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border: rgb(175, 175, 175) solid 1px;
 }
 
-.tablaUsuarios:last-child{
-    margin-bottom: 3rem;
+
+.tablaUsuarios input{
+    width: 100%;
+    background: transparent;
+    border: none;
+    text-align: center;
+}
+
+.tablaUsuarios img{
+    width: 10rem;;
 }
 
 .tablaUsuarios th:first-of-type{
-    width: 10%;
+    width: 20%;
+    padding: .5rem;
 }
+
 th, td{
-    border: solid 1px;
+    background-color: rgb(182, 182, 185);
+    border: none;
 }
+
+thead th, thead td{
+    background-color: rgb(189, 178, 85);
+    padding: 1rem;
+    
+
+}
+
 
 .layout{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+.botones{
+    display: flex;
+    gap: 1rem;
+    margin-top: 3rem;
+    font-size: 1.5rem;
 }

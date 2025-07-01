@@ -19,7 +19,6 @@ function Profile() {
       case "consultar":
         return (
           <div className="contenedorPerfil">
-            <h2>Consultar Usuario</h2>
             <GetProfile/>
           </div>
         );
