@@ -7,6 +7,7 @@ import Users from "./src/pages/Users";
 import User from "./src/pages/User";
 import Documents from "./src/pages/Documents";
 import Document from "./src/pages/Document";
+import CreateDocument from "./src/pages/CreateDocument";
 
 export function Router() {
   return (
@@ -20,6 +21,7 @@ export function Router() {
         <Route path="/usuario/:id" element={<User />} />
         <Route path="/documents" element={<Documents/>}/>
         <Route path="/documents/:id" element={<Document/>}/>
+        <Route path='/createDocument' element={<CreateDocument/>} />
       </Routes>
     </BrowserRouter>
   );

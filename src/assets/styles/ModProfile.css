@@ -1,5 +1,8 @@
 .editarPerfil {
-  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+
+  width: 40rem;
   margin: 2rem auto;
   padding: 2rem;
   background-color: #ffffff;
@@ -42,10 +45,10 @@ input[type="file"] {
   margin: 1rem 0;
 }
 
-.modBotonPerfil{
-  align-self: flex-end;
-}
+.modBotonPerfil {
+  align-self: center;
 
+}
 
 /* Responsive */
 @media (max-width: 600px) {

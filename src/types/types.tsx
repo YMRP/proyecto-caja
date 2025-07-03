@@ -43,12 +43,3 @@ type LogSesion = {
 export type HeaderPagesProps = {
   text: string
 }
-
-// export type FieldsGroup = {
-//     text : string
-//     type:"email" | "text" | "password" | string
-//     placeholder?:string
-//     id:string
-//     className:string
-    
-// }

@@ -1,59 +1,102 @@
 
+.tituloUsuarios {
+  display: flex;
+  font-size: 1.5rem;
+  justify-content: center;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
 
-.tituloUsuarios{
-    display: flex;
-    font-size: 3rem;
-    align-items: center;
+.tablaUsuarios {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 6rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.tablaUsuarios thead th {
+  background-color: #f1f1f1;
+  font-weight: 600;
+  padding: 12px;
+  border: 1px solid #ccc;
+}
+
+.tablaUsuarios td {
+  border: 1px solid #ccc;
+  padding: 12px;
+  vertical-align: top;
+}
+
+.tablaUsuarios input {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #ccc;
+  text-align: center;
+  padding: .5rem;
+  font-size: 1.5rem;
+}
+.tablaUsuarios select{
+  width: 100%;
+  padding: 10px;
+  font-size: 1.4rem;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+select, option{
+  width: 40%;
+  padding: 10px;
+  font-size: 1.5rem;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* Imágenes */
+.tablaUsuarios img {
+  width: 10rem;
+}
+
+/* Primera columna opcionalmente más ancha */
+.tablaUsuarios th:first-of-type {
+  width: 20%;
+  padding: .5rem;
+  background-color: #eeeff0;
+  border: 1px solid #ccc;
 
 }
 
-.tablaUsuarios{
-    text-align: center;
-    font-size: 6rem;
-    width: 50%;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    border: rgb(175, 175, 175) solid 1px;
-}
-
-
-.tablaUsuarios input{
-    width: 100%;
-    background: transparent;
-    border: none;
-    text-align: center;
-}
-
-.tablaUsuarios img{
-    width: 10rem;;
-}
-
-.tablaUsuarios th:first-of-type{
-    width: 20%;
-    padding: .5rem;
-}
-
-th, td{
-    background-color: rgb(182, 182, 185);
-    border: none;
-}
-
-thead th, thead td{
-    background-color: rgb(189, 178, 85);
-    padding: 1rem;
-    
-
-}
-
-
-.layout{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+/* Enlaces de acción estilo "ver detalle" */
+.tablaUsuarios a {
+  text-decoration: none;
+  font-weight: 500;
 }
 
 .botones{
     display: flex;
     gap: 1rem;
-    margin-top: 3rem;
     font-size: 1.5rem;
+}
+
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .usuarios-container {
+    padding: 1rem;
+  }
+
+  .tablaUsuarios th,
+  .tablaUsuarios td {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .tablaUsuarios input {
+    font-size: 0.9rem;
+  }
+
+  .tablaUsuarios img {
+    width: 6rem;
+  }
 }

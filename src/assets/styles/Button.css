@@ -24,5 +24,10 @@ button:hover {
 .botonEliminar:hover {
   transition: 200ms;
 
-  background-color: rgb(240, 119, 119);
+  background-color: rgb(255, 88, 77);
+}
+
+.botonCrearDoc{
+  font-size: 1.5rem;
+  width: fit-content;
 }

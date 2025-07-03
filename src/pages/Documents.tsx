@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../assets/styles/Documents.css";
 import Header from "../components/Header";
 import HeaderPages from "../components/HeaderPages";
+import Button from "../components/Button";
 
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 
 function Documents() {
   const [documentos, setDocumentos] = useState<any[]>([]);
   const accessToken = localStorage.getItem("access");
+  const navigate = useNavigate()
 
   useEffect(() => {
     async function fetchDocuments() {
@@ -33,6 +35,8 @@ function Documents() {
               : null,
           };
         });
+
+        
 
         setDocumentos(docsConUltimaVersion);
         console.log(response.data);
@@ -58,7 +62,12 @@ function Documents() {
       <Header />
       <HeaderPages text={"Documentos disponibles"} />
 
+     
+
       <div className="contenedorHome">
+         <Button text="Crear Documento" onClick={()=>{
+        navigate('/createDocument')
+      }} className="botonCrearDoc"></Button>
         <table className="tablaDocumentos">
           <thead>
             <tr>

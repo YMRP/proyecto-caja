@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import type { ChangeEvent } from "react";
 import "../assets/styles/ModProfile.css";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
-import {toast} from 'sonner'
+import { toast } from "sonner";
 
 export function ModProfile() {
   const [nombre, setNombre] = useState("");
@@ -15,12 +15,20 @@ export function ModProfile() {
   // Obtener datos del usuario al montar el componente
   useEffect(() => {
     const fetchUserData = async () => {
+      const loadingToast = toast.loading(
+        <div style={{ fontSize: "1.5rem", color: "black" }}>Cargando...</div>,
+        {
+          position: "top-right",
+        }
+      );
       try {
         const response = await axios.get(`${apiUrl}api/obtener-perfil/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
+        toast.dismiss(loadingToast);
+
         const userData = response.data;
         console.log(userData);
         setNombre(userData.nombre || "");
@@ -57,15 +65,21 @@ export function ModProfile() {
           },
         }
       );
-    
-       toast.success(
-          <div style={{ fontSize: "1.5rem", color: "green" }}>
-            {response.data.mensaje}
-          </div>,
-          { position: "top-right" }
-        );
+
+      toast.success(
+        <div style={{ fontSize: "1.5rem", color: "green" }}>
+          {response.data.mensaje}
+        </div>,
+        { position: "top-right" }
+      );
     } catch (e: any) {
-      console.error("Error al actualizar perfil:", e.message);
+      toast.error(
+        <div style={{ fontSize: "1.5rem", color: "red" }}>
+          {"Error al actualizar perfil"}
+        </div>,
+        { position: "top-right" }
+      );
+      console.log(e);
     }
   };
 
@@ -81,17 +95,23 @@ export function ModProfile() {
         />
       </div>
       <div className="campo">
- <label htmlFor="">Contraseña: </label>
-      <input
-        type="password"
-        placeholder="Nueva contraseña"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <label htmlFor="">Contraseña: </label>
+        <input
+          type="password"
+          placeholder="Nueva contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </div>
-     
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={modUser} className="modBotonPerfil">Actualizar Perfil</button>
+
+      <div className="campo">
+        <label htmlFor="inputPhoto">Subir una foto</label>
+        <input type="file" onChange={handleFileChange} id="inputPhoto" />
+      </div>
+
+      <button onClick={modUser} className="modBotonPerfil">
+        Actualizar Perfil
+      </button>
     </div>
   );
 }

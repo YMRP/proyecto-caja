@@ -22,6 +22,7 @@ function Document() {
           (doc: any) => doc.id === Number(id)
         );
         setDocumento(docFiltrado);
+        console.log(response.data);
       } catch (error) {
         console.error("Error al obtener documento:", error);
       }
@@ -29,6 +30,8 @@ function Document() {
 
     fetchDocument();
   }, [id]);
+
+  console.log("mi documento: ",documento)
 
   if (!documento) {
     return <p style={{ padding: "1rem" }}>Cargando documento...</p>;
@@ -64,13 +67,22 @@ function Document() {
               <td>
                 <strong>Área Operativa</strong>
               </td>
-              <td>{documento.area_operativa}</td>
+              <td>
+ 
+                    {documento.area_operativa == null
+                      ? documento.area_operativa_otro
+                      : documento.area_operativa || "no especificado"}
+
+              </td>
             </tr>
             <tr>
               <td>
                 <strong>Funcionarios que aplican</strong>
               </td>
-              <td>{documento.funcionarios_aplican}</td>
+              <td>{
+              documento.funcionarios_aplican_display == null ? documento.funcionarios_aplican_otro : documento.funcionarios_aplican_display || "no especificado"}
+
+              </td>
             </tr>
             <tr>
               <td>
@@ -157,11 +169,12 @@ function Document() {
                 </td>
                 <td>
                   <a
-                    href={`${apiUrl.replace(/\/$/, "")}${v.archivo_path}`}
+                    href={v.archivo_path}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     Ver archivo ({v.tipo_archivo})
+                    {console.log("tipo archivo: ", v.archivo_path)}
                   </a>
                 </td>
               </tr>

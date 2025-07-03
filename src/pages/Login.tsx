@@ -84,11 +84,11 @@ function Login() {
       } else {
         toast.dismiss(loadingToast);
         toast.error(
-        <div style={{ fontSize: "1.5rem", color: "red" }}>
+          <div style={{ fontSize: "1.5rem", color: "red" }}>
             {response.data.mensaje}
-        </div>,
-        { position: "top-right" }
-      );
+          </div>,
+          { position: "top-right" }
+        );
       }
     } catch (error) {
       toast.dismiss(loadingToast);
