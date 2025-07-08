@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/Header";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
+import Footer from "../components/Footer";
 
 function Document() {
   const { id } = useParams();
@@ -31,7 +32,7 @@ function Document() {
     fetchDocument();
   }, [id]);
 
-  console.log("mi documento: ",documento)
+  console.log("mi documento: ", documento);
 
   if (!documento) {
     return <p style={{ padding: "1rem" }}>Cargando documento...</p>;
@@ -68,20 +69,19 @@ function Document() {
                 <strong>Área Operativa</strong>
               </td>
               <td>
- 
-                    {documento.area_operativa == null
-                      ? documento.area_operativa_otro
-                      : documento.area_operativa || "no especificado"}
-
+                {documento.area_operativa == null
+                  ? documento.area_operativa_otro
+                  : documento.area_operativa || "no especificado"}
               </td>
             </tr>
             <tr>
               <td>
                 <strong>Funcionarios que aplican</strong>
               </td>
-              <td>{
-              documento.funcionarios_aplican_display == null ? documento.funcionarios_aplican_otro : documento.funcionarios_aplican_display || "no especificado"}
-
+              <td>
+                {documento.funcionarios_aplican_display == null
+                  ? documento.funcionarios_aplican_otro
+                  : documento.funcionarios_aplican_display || "no especificado"}
               </td>
             </tr>
             <tr>
@@ -116,6 +116,18 @@ function Document() {
             </tr>
             <tr>
               <td>
+                <strong>Fecha Revocación</strong>
+              </td>
+              <td>
+                {documento.fecha_revocacion === null ? (
+                  <p>Sin fecha de revocación</p>
+                ) : (
+                  <p>{documento.fecha_revocacion}</p>
+                )}
+              </td>
+            </tr>
+            <tr>
+              <td>
                 <strong>Última Revisión</strong>
               </td>
               <td>{documento.fecha_ultima_revision}</td>
@@ -140,9 +152,21 @@ function Document() {
             </tr>
             <tr>
               <td>
-                <strong>Número de Sesión</strong>
+                <strong>Número de Sesión Aprobación</strong>
+              </td>
+              <td>{documento.numero_sesion_aprobacion}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Número de Sesión Ultima Acta</strong>
               </td>
               <td>{documento.numero_sesion_ultima_act}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Usuario Creador</strong>
+              </td>
+              <td>{documento.nombre_usuario_creador}</td>
             </tr>
           </tbody>
         </table>
@@ -182,6 +206,7 @@ function Document() {
           </tbody>
         </table>
       </div>
+      <Footer />
     </div>
   );
 }

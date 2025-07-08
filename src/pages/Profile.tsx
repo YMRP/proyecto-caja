@@ -22,21 +22,6 @@ function Profile() {
             <GetProfile/>
           </div>
         );
-
-      case "ajustes":
-        return (
-          <div className="contenedorPerfil">
-            <h2>Ajustes</h2>
-            <p>Aquí irían tus ajustes generales.</p>
-          </div>
-        );
-      case "notificaciones":
-        return (
-          <div className="contenedorPerfil">
-            <h2>Notificaciones</h2>
-            <p>Aquí podrías configurar las notificaciones.</p>
-          </div>
-        );
       default:
         return null;
     }

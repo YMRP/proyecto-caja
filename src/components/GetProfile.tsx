@@ -4,6 +4,7 @@ import type { Usuario } from "../types/types";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 import "../assets/styles/GetProfile.css";
 import { toast } from "sonner";
+import defaultImage from '../assets/images/default.jpg'
 export function GetProfile() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -44,13 +45,17 @@ export function GetProfile() {
           {usuario.foto_perfil ? (
             <div className="foto-perfil">
               <img
-                src={usuario.foto_perfil || "src/assets/images/default.jpg"}
+                src={usuario.foto_perfil || defaultImage}
                 alt="Foto de perfil"
                 className="imagen-perfil"
               />
             </div>
           ) : (
-            <div className="foto-perfil">Sin foto de perfil</div>
+             <img
+                src={defaultImage}
+                alt="Foto de perfil"
+                className="imagen-perfil"
+              />
           )}
           <div className="usuarioFields">
             <p>

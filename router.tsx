@@ -8,6 +8,7 @@ import User from "./src/pages/User";
 import Documents from "./src/pages/Documents";
 import Document from "./src/pages/Document";
 import CreateDocument from "./src/pages/CreateDocument";
+import ModDocument from "./src/pages/ModDocument";
 
 export function Router() {
   return (
@@ -19,9 +20,10 @@ export function Router() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/users" element={<Users />} />
         <Route path="/usuario/:id" element={<User />} />
-        <Route path="/documents" element={<Documents/>}/>
-        <Route path="/documents/:id" element={<Document/>}/>
-        <Route path='/createDocument' element={<CreateDocument/>} />
+        <Route path="/documents" element={<Documents />} />
+        <Route path="/documents/:id" element={<Document />} />
+        <Route path="/createDocument" element={<CreateDocument />} />
+        <Route path="/modDocument/:id" element={<ModDocument />} />
       </Routes>
     </BrowserRouter>
   );

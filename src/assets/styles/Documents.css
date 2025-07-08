@@ -9,7 +9,7 @@
   border: 1px solid #ccc;
   padding: 12px;
   text-align: left;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
 }
 
 .tablaDocumentos th {
@@ -29,7 +29,6 @@
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-  font-family: "Segoe UI", sans-serif;
 }
 
 .document-table-container h2 {
@@ -58,14 +57,16 @@
 .tabla-versiones th {
   border: 1px solid #ddd;
   padding: 12px;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   vertical-align: top;
 
 }
 
+
+
 .tabla-documento td:first-child {
   width: 250px;
-  font-weight: 600;
+  font-size: 1.9rem;
   background-color: #f9f9f9;
 }
 
@@ -101,3 +102,18 @@
     width: 180px;
   }
 }
+
+
+.lastVersion{
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  justify-content: space-evenly;
+}
+
+a{
+  color: black;
+}
+
+
+

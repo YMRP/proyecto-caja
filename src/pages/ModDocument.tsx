@@ -5,10 +5,13 @@ import HeaderPages from "../components/HeaderPages";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 import { toast } from "sonner";
+import { useParams, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import type { Usuario } from "../types/types";
 
-function CreateDocument() {
+function ModDocument() {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [archivo, setArchivo] = useState<File | null>(null);
   const accessToken = localStorage.getItem("access");
 
@@ -47,13 +50,64 @@ function CreateDocument() {
           },
         });
         setUsuarios(response.data);
+        return response.data;
       } catch (err: any) {
         console.error("Error al obtener usuarios:", err.message);
+        return [];
       }
     };
 
-    fetchUsuarios();
-  }, []);
+    const fetchDocumento = async (usuarios: Usuario[]) => {
+      try {
+        const response = await axios.get(`${apiUrl}documentos-visibles/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        const doc = response.data.find((d: any) => d.id === Number(id));
+        if (!doc) throw new Error("Documento no encontrado");
+
+        const creador = usuarios.find(
+          (u) => u.id === doc.usuario_creador?.id
+        )?.id?.toString() || "";
+
+        setFormDataValues({
+          titulo: doc.titulo || "",
+          referencia: doc.referencia || "",
+          descripcion: doc.descripcion || "",
+          categoria: doc.categoria || "interno",
+          fecha_ultima_revision: doc.fecha_ultima_revision || "",
+          fecha_ultima_actualizacion: doc.fecha_ultima_actualizacion || "",
+          fecha_aprobacion_ca: doc.fecha_aprobacion_ca || "",
+          fecha_revocacion: doc.fecha_revocacion || "",
+          organo_ejecutivo_aprobador: doc.organo_ejecutivo_aprobador || "",
+          numero_sesion_aprobacion: doc.numero_sesion_aprobacion || "",
+          area_operativa: doc.area_operativa || "",
+          area_operativa_otro: doc.area_operativa_otro || "",
+          funcionarios_aplican: doc.funcionarios_aplican || "",
+          funcionarios_aplican_otro: doc.funcionarios_aplican_otro || "",
+          proceso_operativo: doc.proceso_operativo || "",
+          numero_sesion_ultima_act: doc.numero_sesion_ultima_act || "",
+          numero_acuerdo: doc.numero_acuerdo || "",
+          usuario_creador: creador,
+          version_actual: doc.version_actual?.toString() || "1",
+          firmado_por: doc.firmado_por || "",
+          autorizado_por: doc.autorizado_por || "",
+        });
+      } catch (err: any) {
+        console.error("Error al obtener documento:", err.message);
+        toast.error("Documento no encontrado");
+      }
+    };
+
+    const fetchData = async () => {
+      const usuariosData = await fetchUsuarios();
+      await fetchDocumento(usuariosData);
+    };
+
+    fetchData();
+  }, [id, accessToken]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -77,7 +131,14 @@ function CreateDocument() {
     }
 
     for (const key in formDataValues) {
-      formData.append(key, formDataValues[key as keyof typeof formDataValues]);
+      const value = formDataValues[key as keyof typeof formDataValues];
+      if (value !== null && value !== undefined && value !== "") {
+        if (key === "usuario_creador") {
+          formData.append(key, String(Number(value)));
+        } else {
+          formData.append(key, value);
+        }
+      }
     }
 
     const loadingToast = toast.loading(
@@ -88,8 +149,8 @@ function CreateDocument() {
     );
 
     try {
-      const response = await axios.post(
-        `${apiUrl}api/crear-documento`,
+      const response = await axios.put(
+        `${apiUrl}api/documento/${id}/`,
         formData,
         {
           headers: {
@@ -98,30 +159,34 @@ function CreateDocument() {
         }
       );
 
-      console.log("Documento creado:", response.data);
+      console.log("Documento modificado:", response.data);
       toast.success(
         <div style={{ fontSize: "1.5rem", color: "green" }}>
-          {response.data.mensaje}
+          {response.data.mensaje || "Documento modificado correctamente"}
         </div>,
         { position: "top-right" }
       );
+
+      navigate("/documents");
     } catch (error: any) {
-      console.error("Error al crear el documento:", error);
+      console.error("Error al modificar el documento:", error);
+      console.log("Respuesta del servidor:", error.response?.data);
       toast.error(
         <div style={{ fontSize: "1.5rem", color: "red" }}>
-          {"Error al crear el documento"}
+          {"Error al modificar el documento"}
         </div>,
         { position: "top-right" }
       );
     } finally {
       toast.dismiss(loadingToast);
     }
-  }; // <-- AQUÍ se cierra bien handleSubmit
+  };
+
 
   return (
     <div>
       <Header />
-      <HeaderPages text="Crear Documento" />
+      <HeaderPages text="Modificar Documento" />
       <div className="contenedorHome">
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <table className="formulario-tabla">
@@ -129,21 +194,31 @@ function CreateDocument() {
               <tr>
                 <th>Referencia</th>
                 <td>
-                  <input name="referencia" onChange={handleChange} required />
+                  <input
+                    name="referencia"
+                    value={formDataValues.referencia}
+                    onChange={handleChange}
+                    required
+                  />
                 </td>
               </tr>
               <tr>
                 <th>Título</th>
                 <td>
-                  <input name="titulo" onChange={handleChange} required />
+                  <input
+                    name="titulo"
+                    value={formDataValues.titulo}
+                    onChange={handleChange}
+                    required
+                  />
                 </td>
               </tr>
-
               <tr>
                 <th>Descripción</th>
                 <td>
                   <textarea
                     name="descripcion"
+                    value={formDataValues.descripcion}
                     onChange={handleChange}
                     required
                   />
@@ -152,7 +227,11 @@ function CreateDocument() {
               <tr>
                 <th>Categoría</th>
                 <td>
-                  <select name="categoria" onChange={handleChange}>
+                  <select
+                    name="categoria"
+                    value={formDataValues.categoria}
+                    onChange={handleChange}
+                  >
                     <option value="interno">Interno</option>
                     <option value="confidencial">Confidencial</option>
                     <option value="restringido">Restringido</option>
@@ -166,6 +245,7 @@ function CreateDocument() {
                   <input
                     type="date"
                     name="fecha_ultima_revision"
+                    value={formDataValues.fecha_ultima_revision}
                     onChange={handleChange}
                   />
                 </td>
@@ -176,6 +256,7 @@ function CreateDocument() {
                   <input
                     type="date"
                     name="fecha_ultima_actualizacion"
+                    value={formDataValues.fecha_ultima_actualizacion}
                     onChange={handleChange}
                   />
                 </td>
@@ -186,6 +267,7 @@ function CreateDocument() {
                   <input
                     type="date"
                     name="fecha_aprobacion_ca"
+                    value={formDataValues.fecha_aprobacion_ca}
                     onChange={handleChange}
                   />
                 </td>
@@ -196,6 +278,7 @@ function CreateDocument() {
                   <input
                     type="date"
                     name="fecha_revocacion"
+                    value={formDataValues.fecha_revocacion}
                     onChange={handleChange}
                   />
                 </td>
@@ -215,6 +298,7 @@ function CreateDocument() {
                 <td>
                   <input
                     name="numero_sesion_aprobacion"
+                    value={formDataValues.numero_sesion_aprobacion}
                     onChange={handleChange}
                   />
                 </td>
@@ -224,8 +308,8 @@ function CreateDocument() {
                 <td>
                   <select
                     name="area_operativa"
-                    onChange={handleChange}
                     value={formDataValues.area_operativa}
+                    onChange={handleChange}
                   >
                     <option value="">Selecciona una opción</option>
                     <option value="administrativa">Administrativa</option>
@@ -251,24 +335,22 @@ function CreateDocument() {
                 </td>
               </tr>
               <tr>
-                <th>Área Operativa otro</th>
+                <th>Área Operativa Otro</th>
                 <td>
                   <input
                     name="area_operativa_otro"
-                    type="text"
-                    placeholder="Si tu área operativa no esta en la lista, escribela aquí"
+                    value={formDataValues.area_operativa_otro}
                     onChange={handleChange}
                   />
                 </td>
               </tr>
-
               <tr>
                 <th>Funcionarios Aplican</th>
                 <td>
                   <select
                     name="funcionarios_aplican"
-                    onChange={handleChange}
                     value={formDataValues.funcionarios_aplican}
+                    onChange={handleChange}
                   >
                     <option value="">Selecciona un funcionario</option>
                     <option value="gerente_general">Gerente General</option>
@@ -359,29 +441,31 @@ function CreateDocument() {
                 </td>
               </tr>
               <tr>
-                <th>Funcionarios Aplican Otro </th>
+                <th>Funcionarios Aplican Otro</th>
                 <td>
                   <input
                     name="funcionarios_aplican_otro"
-                    type="text"
-                    placeholder="Si tu funcionario no esta en la lista, escribela aquí"
+                    value={formDataValues.funcionarios_aplican_otro}
                     onChange={handleChange}
                   />
                 </td>
               </tr>
-
               <tr>
                 <th>Proceso Operativo</th>
                 <td>
-                  <input name="proceso_operativo" onChange={handleChange} />
+                  <input
+                    name="proceso_operativo"
+                    value={formDataValues.proceso_operativo}
+                    onChange={handleChange}
+                  />
                 </td>
               </tr>
-
               <tr>
                 <th>Número Sesión Última Actualización</th>
                 <td>
                   <input
                     name="numero_sesion_ultima_act"
+                    value={formDataValues.numero_sesion_ultima_act}
                     onChange={handleChange}
                   />
                 </td>
@@ -389,59 +473,54 @@ function CreateDocument() {
               <tr>
                 <th>Número de Acuerdo</th>
                 <td>
-                  <input name="numero_acuerdo" onChange={handleChange} />
-                </td>
-              </tr>
-              <tr>
-                <th>Usuario Creador</th>
-                <td>
-                  <select
-                    name="usuario_creador"
-                    id="usuario_creador"
+                  <input
+                    name="numero_acuerdo"
+                    value={formDataValues.numero_acuerdo}
                     onChange={handleChange}
-                    value={formDataValues.usuario_creador}
-                  >
-                    <option value="">Selecciona un usuario</option>
-                    {usuarios.map((usuario) => (
-                      <option key={usuario.id} value={usuario.id}>
-                        {usuario.nombre}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </td>
               </tr>
+             
               <tr>
                 <th>Versión Actual</th>
                 <td>
                   <input
-                    name="version_actual"
-                    onChange={handleChange}
                     type="number"
                     min={1}
+                    name="version_actual"
+                    value={formDataValues.version_actual}
+                    onChange={handleChange}
                   />
                 </td>
               </tr>
               <tr>
                 <th>Firmado por</th>
                 <td>
-                  <input name="firmado_por" onChange={handleChange} />
+                  <input
+                    name="firmado_por"
+                    value={formDataValues.firmado_por}
+                    onChange={handleChange}
+                  />
                 </td>
               </tr>
               <tr>
                 <th>Autorizado por</th>
                 <td>
-                  <input name="autorizado_por" onChange={handleChange} />
+                  <input
+                    name="autorizado_por"
+                    value={formDataValues.autorizado_por}
+                    onChange={handleChange}
+                  />
                 </td>
               </tr>
             </tbody>
           </table>
-          <button type="submit">Crear Documento</button>
+          <button type="submit">Guardar Cambios</button>
         </form>
       </div>
-            <Footer/>
-
+      <Footer />
     </div>
   );
 }
 
-export default CreateDocument;
+export default ModDocument;
