@@ -50,6 +50,7 @@ function ModDocument() {
           },
         });
         setUsuarios(response.data);
+        console.log(usuarios)
         return response.data;
       } catch (err: any) {
         console.error("Error al obtener usuarios:", err.message);
