@@ -9,6 +9,8 @@ const apiUrl = import.meta.env.VITE_URL_BACKEND;
 import Button from "../components/Button";
 import { toast } from "sonner";
 import HeaderPages from "../components/HeaderPages";
+import { GeneratePassword } from "js-generate-password";
+import { GrTools } from "react-icons/gr";
 
 function User() {
   const { id } = useParams<{ id: string }>();
@@ -17,8 +19,8 @@ function User() {
   const [loading, setLoading] = useState(true);
   const accessToken = localStorage.getItem("access");
   //AGREGAR CAMPO DE MODIFICAR: BLOQUEADO, CONTRASEÑA
-  const [password, setPassword] = useState<string>();
-
+  const [password, setPassword] = useState<string>("");
+  const [temporalPass, setTemporalPass] = useState<boolean>(false);
   useEffect(() => {
     if (!id) return;
 
@@ -45,6 +47,14 @@ function User() {
     obtenerUsuario();
   }, [id, accessToken]);
 
+  function Generate() {
+    let passGenerated = GeneratePassword({
+      length: 12,
+      symbols: false,
+    });
+    setTemporalPass(true);
+    setPassword(passGenerated);
+  }
   if (loading)
     return (
       <>
@@ -95,7 +105,8 @@ function User() {
         `${apiUrl}api/admin/usuarios/${id}/`,
         {
           ...usuario,
-          password: password || undefined, // solo lo envía si hay valor
+          password: password || undefined, 
+          temporal_pass: temporalPass,
         },
         {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -103,11 +114,11 @@ function User() {
       );
 
       toast.success(
-                <div style={{ fontSize: "1.5rem", color: "green" }}>
-                  Cambios guardados correctamente
-                </div>,
-                { position: "top-right" }
-              );
+        <div style={{ fontSize: "1.5rem", color: "green" }}>
+          Cambios guardados correctamente
+        </div>,
+        { position: "top-right" }
+      );
       console.log("Guardado");
     } catch (err: any) {
       toast.error(
@@ -209,14 +220,21 @@ function User() {
               </td>
             </tr>
             <tr>
-              <th>Contraseña sugerida</th>
+              <th>Contraseña temporal</th>
               <td>
                 <input
                   type="text"
                   value={password}
+                  id="contraseña_temporal"
                   onChange={(e) => {
                     setPassword(e.target.value);
                   }}
+                  disabled
+                />
+                <GrTools
+                  size={30}
+                  className="iconGenerate"
+                  onClick={Generate}
                 />
               </td>
             </tr>
@@ -289,7 +307,7 @@ function User() {
           </tbody>
         </table>
 
-        <h1>Ultimos registros de sesion</h1>
+      <HeaderPages text="Ultimos registros de sesión" />
 
         <table
           className="tablaUsuarios"

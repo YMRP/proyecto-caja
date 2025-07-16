@@ -65,22 +65,40 @@ function Login() {
       });
 
       toast.dismiss(loadingToast);
-
+      console.log(response.data)
       if (response.data.login) {
-        // Guarda el token y los datos del usuario
-        localStorage.setItem("access", response.data.access);
-        localStorage.setItem("refresh", response.data.refresh); // ⬅️ ESTA ES LA CLAVE
-        localStorage.setItem("usuario", JSON.stringify(response.data.usuario));
+        // Si el usuario tiene que cambiar su contraseña, no guardar los tokens aún
+        if (response.data.requerir_cambio_password) {
+          toast(
+            <div style={{ fontSize: "1.5rem", color: "orange" }}>
+              {response.data.mensaje}
+            </div>,
+            { position: "top-right" }
+          );
 
-        toast.success(
-          <div style={{ fontSize: "1.5rem", color: "green" }}>
-            {response.data.mensaje}
-          </div>,
-          { position: "top-right" }
-        );
+          // Guarda solo el usuario para saber a quién pertenece el cambio
+          localStorage.setItem(
+            "usuario",
+            JSON.stringify(response.data.usuario)
+          );
+          navigate("/newPassword");
+        } else {
+          localStorage.setItem("access", response.data.access);
+          localStorage.setItem("refresh", response.data.refresh);
+          localStorage.setItem(
+            "usuario",
+            JSON.stringify(response.data.usuario)
+          );
 
-        // Redirige a /home
-        navigate("/home");
+          toast.success(
+            <div style={{ fontSize: "1.5rem", color: "green" }}>
+              {response.data.mensaje}
+            </div>,
+            { position: "top-right" }
+          );
+
+          navigate("/home");
+        }
       } else {
         toast.dismiss(loadingToast);
         toast.error(
@@ -93,7 +111,7 @@ function Login() {
     } catch (error) {
       toast.dismiss(loadingToast);
 
-      // Solo se ejecuta si hay un error de red o el servidor está caído
+
       toast.error("No se pudo conectar con el servidor.");
     }
   };

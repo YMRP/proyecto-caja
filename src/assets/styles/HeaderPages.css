@@ -9,3 +9,12 @@ margin-top: 3rem;
 -headerPages h1 {
   font-size: 3rem;
 }
+
+
+@media (max-width: 600px){
+    .headerPages{
+      text-align: center;
+      margin-left: 2rem;
+      margin-right: 2rem;
+    }
+}

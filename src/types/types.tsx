@@ -29,7 +29,7 @@ export type Usuario = {
   intentos_fallidos?:number
   bloqueado?: boolean
   last_login?: string
-  
+  password_sugerido?: string
   logs_sesion?: LogSesion[];
 }
 

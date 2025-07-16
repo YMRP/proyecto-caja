@@ -32,7 +32,30 @@ function Header() {
 
     obtenerImagen();
   }, []);
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const token = localStorage.getItem("access");
+      if (!token) return;
 
+      const body = JSON.stringify({ token });
+      const blob = new Blob([body], { type: "application/json" });
+
+      const endpoint = apiUrl.endsWith("/")
+        ? `${apiUrl}cerrar-sesion-beacon/`
+        : `${apiUrl}/cerrar-sesion-beacon/`;
+
+      navigator.sendBeacon(endpoint, blob);
+
+      // ❌ No limpies localStorage aquí, porque puede ser navegación interna
+      // localStorage.clear();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
   function openClose() {
     const menuDropDown = document.getElementsByClassName("dropDown")[0];
     menuDropDown.classList.toggle("showMenu");
@@ -65,6 +88,8 @@ function Header() {
         <nav>
           <NavElement href={"/home"} value="INICIO" />
           <NavElement href={"/users"} value="USUARIOS" />
+          <NavElement href={"/asignations/:id"} value="ASIGNACIONES" />
+
           <NavElement href={"/documents"} value="DOCUMENTOS" />
 
           <img
@@ -78,7 +103,9 @@ function Header() {
 
       <div className="dropDown">
         <a href="/profile">Ajustes de perfil</a>
-        <a href="#" onClick={cerrarSesion}>Cerrar sesión</a>
+        <a href="#" onClick={cerrarSesion}>
+          Cerrar sesión
+        </a>
       </div>
     </div>
   );

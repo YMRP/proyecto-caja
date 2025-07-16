@@ -79,6 +79,17 @@ select, option{
     font-size: 1.5rem;
 }
 
+.iconGenerate{
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: 200ms;
+}
+
+.iconGenerate:hover{
+  color: rgb(59, 59, 236);
+  transition: 200ms;
+
+}
 
 /* Responsive */
 @media screen and (max-width: 768px) {

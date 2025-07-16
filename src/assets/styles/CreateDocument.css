@@ -53,6 +53,15 @@
   background-color: #005fa3;
 }
 
+select, input, button{
+  width: 100%;
+  padding: 10px;
+  font-size: 1.4rem;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+
 @media screen and (max-width: 768px) {
   .formulario-tabla th,
   .formulario-tabla td {

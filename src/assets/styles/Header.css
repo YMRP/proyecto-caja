@@ -75,18 +75,17 @@ nav {
     align-items: center;
     height: auto;
     padding: 1rem;
-    gap: 1rem;
+    gap: 2rem;
   }
 
   nav {
-   flex-direction: row;
-   justify-content: space-between;
-   
+    flex-wrap: wrap;
+   justify-content: space-evenly;
   }
 
   .fotoUsuario {
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 5rem;
+    height: 5rem;
   }
 
   .dropDown {

@@ -103,14 +103,19 @@
   }
 }
 
-
-.lastVersion{
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  justify-content: space-evenly;
+.lastVersion {
+  padding: 0;
 }
 
+.versionContainer {
+  display: flex;
+  align-items: center;         /* Centra verticalmente */
+  gap: 10px;                   /* Espacio entre número y el icono */
+  padding: 12px;               /* Ajusta el padding si deseas */
+}
+span{
+  font-size: 1.5rem;
+}
 a{
   color: black;
 }

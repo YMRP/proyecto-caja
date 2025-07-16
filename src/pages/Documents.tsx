@@ -9,13 +9,17 @@ import { AiOutlineFileAdd } from "react-icons/ai";
 import { MdPreview } from "react-icons/md";
 import { MdMode } from "react-icons/md";
 import { TiTrash } from "react-icons/ti";
-import { toast } from "sonner"; // Asegúrate de importar esto
+import { toast } from "sonner";
 import Footer from "../components/Footer";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 
-
 function Documents() {
   const [documentos, setDocumentos] = useState<any[]>([]);
+  const [mensajeHover, setMensajeHover] = useState<string | null>(null);
+  const [posicionHover, setPosicionHover] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
   const accessToken = localStorage.getItem("access");
   const navigate = useNavigate();
 
@@ -63,13 +67,13 @@ function Documents() {
 
       toast.success(
         <div style={{ fontSize: "1.5rem", color: "green" }}>
-          Documento eliminado correctamente{" "}
+          Documento eliminado correctamente
         </div>,
         {
           position: "top-right",
         }
       );
-      fetchDocuments(); // Refresca la tabla
+      fetchDocuments();
     } catch (error) {
       toast.error(
         <div style={{ fontSize: "1.5rem", color: "red" }}>
@@ -79,6 +83,17 @@ function Documents() {
       );
       console.error("Error eliminando documento:", error);
     }
+  };
+
+  const mostrarMensaje = (mensaje: string, e: React.MouseEvent) => {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    setPosicionHover({ top: rect.top - 30, left: rect.left });
+    setMensajeHover(mensaje);
+  };
+
+  const ocultarMensaje = () => {
+    setMensajeHover(null);
+    setPosicionHover(null);
   };
 
   return (
@@ -113,23 +128,50 @@ function Documents() {
                 <tr key={doc.id}>
                   <td>{doc.titulo}</td>
                   <td className="lastVersion">
-                    {ultimaVersion ? ultimaVersion.numero_version : "—"}
-                    <Link to={`/documents/${doc.id}`}>
-                      <AiOutlineFileAdd size={30} />
-                    </Link>
+                    <div className="versionContainer">
+                      <span>
+                        {ultimaVersion ? ultimaVersion.numero_version : "—"}
+                      </span>
+                      <Link
+                        to={`/UploadDocument/${doc.id}`}
+                        onMouseEnter={(e) =>
+                          mostrarMensaje("Subir nueva versión", e)
+                        }
+                        onMouseLeave={ocultarMensaje}
+                      >
+                        <AiOutlineFileAdd size={30} />
+                      </Link>
+                    </div>
                   </td>
                   <td className="actions">
-                    {/* consulta */}
-                    <Link to={`/documents/${doc.id}`}>
+                    <Link
+                      to={`/documents/${doc.id}`}
+                      onMouseEnter={(e) =>
+                        mostrarMensaje("Ver detalles del documento", e)
+                      }
+                      onMouseLeave={ocultarMensaje}
+                    >
                       <MdPreview size={30} />
                     </Link>
+
                     <span
                       onClick={() => handleDelete(doc.id)}
+                      onMouseEnter={(e) =>
+                        mostrarMensaje("Eliminar documento", e)
+                      }
+                      onMouseLeave={ocultarMensaje}
                       style={{ cursor: "pointer", color: "red" }}
                     >
-                      <TiTrash size={30} />
+                      <TiTrash size={30} color="black" />
                     </span>
-                    <Link to={`/modDocument/${doc.id}`}>
+
+                    <Link
+                      to={`/modDocument/${doc.id}`}
+                      onMouseEnter={(e) =>
+                        mostrarMensaje("Modificar documento", e)
+                      }
+                      onMouseLeave={ocultarMensaje}
+                    >
                       <MdMode size={30} />
                     </Link>
                   </td>
@@ -139,8 +181,28 @@ function Documents() {
           </tbody>
         </table>
       </div>
-      <Footer/>
 
+      {/* Tooltip en hover */}
+      {mensajeHover && posicionHover && (
+        <div
+          style={{
+            position: "fixed",
+            top: posicionHover.top,
+            left: posicionHover.left,
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            color: "white",
+            padding: "6px 10px",
+            borderRadius: "6px",
+            fontSize: "0.85rem",
+            zIndex: 10000,
+            pointerEvents: "none",
+          }}
+        >
+          {mensajeHover}
+        </div>
+      )}
+
+      <Footer />
     </div>
   );
 }
