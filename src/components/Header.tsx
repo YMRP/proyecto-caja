@@ -81,7 +81,7 @@ function Header() {
           <img
             className="logo__header"
             alt="Logo"
-            src="../src/assets/images/logo.jpg"
+            src="images/logo.jpg"
           />
         </a>
 
@@ -93,7 +93,7 @@ function Header() {
           <NavElement href={"/documents"} value="DOCUMENTOS" />
 
           <img
-            src={fotoPerfil || "src/assets/images/default.jpg"}
+            src={fotoPerfil || "images/default.jpg"}
             alt="FotoPerfil"
             className="fotoUsuario"
             onClick={openClose}

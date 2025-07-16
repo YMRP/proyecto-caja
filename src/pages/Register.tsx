@@ -166,7 +166,7 @@ function Register() {
   return (
     <div className="contenedor">
       <div className="loginContenedor">
-        <img src="../src/assets/images/logo.jpg" alt="Logo Caja" />
+        <img src="images/logo.jpg" alt="Logo Caja" />
         <h1>Regístrate</h1>
         <form>
           <div className="campoGrupo">

@@ -112,14 +112,20 @@ function Login() {
       toast.dismiss(loadingToast);
 
 
-      toast.error("No se pudo conectar con el servidor.");
+      toast.error(
+            <div style={{ fontSize: "1.5rem", color: "green" }}>
+              {'no se pudo conectar con el servidor'}
+            </div>,
+            { position: "top-right" }
+          );
+
     }
   };
 
   return (
     <div className="contenedor">
       <div className="loginContenedor">
-        <img src="../src/assets/images/logo.jpg" alt="Logo Caja" />
+        <img src="images/logo.jpg" alt="Logo Caja" />
         <h1>Iniciar Sesión</h1>
         <form action="">
           <div className="campoGrupo">
