@@ -117,7 +117,7 @@ function UploadDocument() {
 
   try {
     // Subir la versión
-    const response = await axios.post(`${apiUrl}api/crear-version`, formData, {
+    const response = await axios.post(`${apiUrl}api/crear-version/`, formData, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
