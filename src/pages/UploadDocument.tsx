@@ -97,67 +97,87 @@ function UploadDocument() {
 
   // Enviar nueva versión
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const formData = new FormData();
-  formData.append("documento", String(Number(id)));
-  formData.append("nombre_documento", formDataValues.nombre_documento);
-  formData.append("numero_version", formDataValues.numero_version);
-  formData.append("tipo_archivo", formDataValues.tipo_archivo);
-  formData.append("usuario_editor", formDataValues.usuario_editor);
-  formData.append("firmado_por", formDataValues.firmado_por);
-  formData.append("autorizado_por", formDataValues.autorizado_por);
-  formData.append("es_ultima", formDataValues.es_ultima.toString());
+    const formData = new FormData();
+    formData.append("documento", String(Number(id)));
+    formData.append("nombre_documento", formDataValues.nombre_documento);
+    formData.append("numero_version", formDataValues.numero_version);
+    formData.append("tipo_archivo", formDataValues.tipo_archivo);
+    formData.append("usuario_editor", formDataValues.usuario_editor);
+    formData.append("firmado_por", formDataValues.firmado_por);
+    formData.append("autorizado_por", formDataValues.autorizado_por);
+    formData.append("es_ultima", formDataValues.es_ultima.toString());
 
-  if (formDataValues.archivo) {
-    formData.append("archivo_path", formDataValues.archivo);
-  }
+    if (formDataValues.archivo) {
+      formData.append("archivo_path", formDataValues.archivo);
+    }
 
-  const loadingToast = toast.loading("Cargando...", { position: "top-right" });
+    const loadingToast = toast.loading(
+      <div style={{ fontSize: "1.5rem", color: "black" }}>Cargando...</div>,
+      {
+        position: "top-right",
+      }
+    );
 
-  try {
-    // Subir la versión
-    const response = await axios.post(`${apiUrl}api/crear-version/`, formData, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    try {
+      // // Subir la versión
+      // const response = await axios.post(
+      //   `${apiUrl}api/crear-version/`,
+      //   formData,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${accessToken}`,
+      //     },
+      //   }
+      // );
 
-    const versionId = response.data.version_id;
-    const usuarioId = formDataValues.usuario_editor;
+      // const versionId = response.data.version_id;
+      // const usuarioId = formDataValues.usuario_editor;
 
-    // Asignar la versión al usuario editor
-    await axios.post(`${apiUrl}api/asignar-version/`, {
-      version_id: versionId,
-      usuario_id: usuarioId,
-    }, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+      // // Asignar la versión al usuario editor
+      // await axios.post(
+      //   `${apiUrl}api/asignar-version/`,
+      //   {
+      //     version_id: versionId,
+      //     usuario_id: usuarioId,
+      //   },
+      //   {
+      //     headers: { Authorization: `Bearer ${accessToken}` },
+      //   }
+      // );
 
-    toast.success("Versión subida y asignada correctamente", {
-      position: "top-right",
-    });
+      // Limpiar formulario
+      setFormDataValues({
+        nombre_documento: nombreDocumento,
+        numero_version: "",
+        archivo: null,
+        tipo_archivo: "PDF",
+        usuario_editor: "",
+        firmado_por: "",
+        autorizado_por: "",
+        es_ultima: false,
+      });
 
-    // Limpiar formulario
-    setFormDataValues({
-      nombre_documento: nombreDocumento,
-      numero_version: "",
-      archivo: null,
-      tipo_archivo: "PDF",
-      usuario_editor: "",
-      firmado_por: "",
-      autorizado_por: "",
-      es_ultima: false,
-    });
-  } catch (error: any) {
-    console.error("Error:", error);
-    toast.error("Error al subir o asignar la versión", {
-      position: "top-right",
-    });
-  } finally {
-    toast.dismiss(loadingToast);
-  }
-};
+      toast.success(
+        <div style={{ fontSize: "1.5rem", color: "green" }}>
+          {"Versión subida y asignada con exito"}
+        </div>,
+        { position: "top-right" }
+      );
+
+    } catch (error: any) {
+      console.error("Error:", error);
+      toast.error(
+        <div style={{ fontSize: "1.5rem", color: "red" }}>
+          {"Error al subir o asignar versión"}
+        </div>,
+        { position: "top-right" }
+      );
+    } finally {
+      toast.dismiss(loadingToast);
+    }
+  };
 
   return (
     <div>
