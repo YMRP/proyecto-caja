@@ -117,7 +117,7 @@ function UploadDocument() {
     );
 
     try {
-      const response = await axios.post(
+     await axios.post(
         `${apiUrl}/api/crear-version/`,
         formData,
         {
@@ -126,7 +126,6 @@ function UploadDocument() {
           },
         }
       );
-
       toast.success(
         <div style={{ fontSize: "1.5rem", color: "green" }}>
           {"Versión subida con éxito"}
@@ -135,7 +134,7 @@ function UploadDocument() {
       );
 
 
-      
+
       setFormDataValues({
         nombre_documento: nombreDocumento,
         numero_version: "",
