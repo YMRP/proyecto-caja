@@ -5,7 +5,7 @@ import "../assets/styles/CreateDocument.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-const apiUrl = import.meta.env.VITE_URL_BACKEND;
+const apiUrl = import.meta.env.VITE_URL_BACKEND.replace(/\/+$/, "");
 import Button from "../components/Button";
 import { toast } from "sonner";
 import type { Usuario } from "../types/types";
@@ -22,17 +22,16 @@ function UploadDocument() {
     numero_version: "",
     archivo: null as File | null,
     tipo_archivo: "PDF",
-    usuario_editor: "",
+    usuario_editor: "", // Aunque no se envía, puede ser útil mostrar en UI
     firmado_por: "",
     autorizado_por: "",
     es_ultima: false,
   });
 
-  // Obtener nombre del documento por ID
   useEffect(() => {
     const fetchNombreDocumento = async () => {
       try {
-        const response = await axios.get(`${apiUrl}documentos-visibles/`, {
+        const response = await axios.get(`${apiUrl}/documentos-visibles/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -55,7 +54,7 @@ function UploadDocument() {
 
     const fetchUsuarios = async () => {
       try {
-        const response = await axios.get(`${apiUrl}api/admin/usuarios/`, {
+        const response = await axios.get(`${apiUrl}/api/admin/usuarios/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -70,7 +69,6 @@ function UploadDocument() {
     fetchUsuarios();
   }, [id]);
 
-  // Cambios en los campos
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -95,7 +93,6 @@ function UploadDocument() {
     }
   };
 
-  // Enviar nueva versión
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -104,7 +101,6 @@ function UploadDocument() {
     formData.append("nombre_documento", formDataValues.nombre_documento);
     formData.append("numero_version", formDataValues.numero_version);
     formData.append("tipo_archivo", formDataValues.tipo_archivo);
-    formData.append("usuario_editor", formDataValues.usuario_editor);
     formData.append("firmado_por", formDataValues.firmado_por);
     formData.append("autorizado_por", formDataValues.autorizado_por);
     formData.append("es_ultima", formDataValues.es_ultima.toString());
@@ -121,33 +117,23 @@ function UploadDocument() {
     );
 
     try {
-      // // Subir la versión
-      // const response = await axios.post(
-      //   `${apiUrl}api/crear-version/`,
-      //   formData,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${accessToken}`,
-      //     },
-      //   }
-      // );
+      const response = await axios.post(
+        `${apiUrl}/api/crear-version/`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
-      // const versionId = response.data.version_id;
-      // const usuarioId = formDataValues.usuario_editor;
+      toast.success(
+        <div style={{ fontSize: "1.5rem", color: "green" }}>
+          {"Versión subida con éxito"}
+        </div>,
+        { position: "top-right" }
+      );
 
-      // // Asignar la versión al usuario editor
-      // await axios.post(
-      //   `${apiUrl}api/asignar-version/`,
-      //   {
-      //     version_id: versionId,
-      //     usuario_id: usuarioId,
-      //   },
-      //   {
-      //     headers: { Authorization: `Bearer ${accessToken}` },
-      //   }
-      // );
-
-      // Limpiar formulario
       setFormDataValues({
         nombre_documento: nombreDocumento,
         numero_version: "",
@@ -159,18 +145,11 @@ function UploadDocument() {
         es_ultima: false,
       });
 
-      toast.success(
-        <div style={{ fontSize: "1.5rem", color: "green" }}>
-          {"Versión subida y asignada con exito"}
-        </div>,
-        { position: "top-right" }
-      );
-
     } catch (error: any) {
       console.error("Error:", error);
       toast.error(
         <div style={{ fontSize: "1.5rem", color: "red" }}>
-          {"Error al subir o asignar versión"}
+          {"Error al subir versión"}
         </div>,
         { position: "top-right" }
       );
@@ -188,15 +167,11 @@ function UploadDocument() {
           <table className="tabla-documento">
             <tbody>
               <tr>
-                <td>
-                  <strong>Nombre documento</strong>
-                </td>
+                <td><strong>Nombre documento</strong></td>
                 <td>{nombreDocumento}</td>
               </tr>
               <tr>
-                <td>
-                  <strong>Número de versión</strong>
-                </td>
+                <td><strong>Número de versión</strong></td>
                 <td>
                   <input
                     type="number"
@@ -209,9 +184,7 @@ function UploadDocument() {
                 </td>
               </tr>
               <tr>
-                <td>
-                  <strong>Archivo</strong>
-                </td>
+                <td><strong>Archivo</strong></td>
                 <td>
                   <input
                     type="file"
@@ -223,9 +196,7 @@ function UploadDocument() {
                 </td>
               </tr>
               <tr>
-                <td>
-                  <strong>Tipo de archivo</strong>
-                </td>
+                <td><strong>Tipo de archivo</strong></td>
                 <td>
                   <select
                     name="tipo_archivo"
@@ -240,15 +211,12 @@ function UploadDocument() {
                 </td>
               </tr>
               <tr>
-                <td>
-                  <strong>Usuario editor</strong>
-                </td>
+                <td><strong>Usuario editor</strong></td>
                 <td>
                   <select
                     name="usuario_editor"
                     value={formDataValues.usuario_editor}
                     onChange={handleInputChange}
-                    required
                   >
                     <option value="">Selecciona un usuario</option>
                     {usuarios.map((usuario) => (
@@ -260,9 +228,7 @@ function UploadDocument() {
                 </td>
               </tr>
               <tr>
-                <td>
-                  <strong>Firmado por</strong>
-                </td>
+                <td><strong>Firmado por</strong></td>
                 <td>
                   <input
                     type="text"
@@ -273,9 +239,7 @@ function UploadDocument() {
                 </td>
               </tr>
               <tr>
-                <td>
-                  <strong>Autorizado por</strong>
-                </td>
+                <td><strong>Autorizado por</strong></td>
                 <td>
                   <input
                     type="text"
@@ -286,9 +250,7 @@ function UploadDocument() {
                 </td>
               </tr>
               <tr>
-                <td>
-                  <strong>¿Es última?</strong>
-                </td>
+                <td><strong>¿Es última?</strong></td>
                 <td>
                   <input
                     type="checkbox"
