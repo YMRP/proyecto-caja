@@ -1,11 +1,9 @@
-import Header from "../components/Header";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import type { Usuario } from "../types/types";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 import { TiTrash } from "react-icons/ti";
 import { Link } from "react-router-dom";
-import Footer from "../components/Footer";
 import HeaderPages from "../components/HeaderPages";
 import Layout from "./Layout";
 
