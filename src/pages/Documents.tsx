@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import "../assets/styles/Documents.css";
-import Header from "../components/Header";
 import HeaderPages from "../components/HeaderPages";
 import Button from "../components/Button";
 import { AiOutlineFileAdd } from "react-icons/ai";
@@ -10,7 +8,7 @@ import { MdPreview } from "react-icons/md";
 import { MdMode } from "react-icons/md";
 import { TiTrash } from "react-icons/ti";
 import { toast } from "sonner";
-import Footer from "../components/Footer";
+import Layout from "./Layout";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 
 function Documents() {
@@ -66,7 +64,7 @@ function Documents() {
       });
 
       toast.success(
-        <div style={{ fontSize: "1.5rem", color: "green" }}>
+        <div style={{  color: "green" }}>
           Documento eliminado correctamente
         </div>,
         {
@@ -76,7 +74,7 @@ function Documents() {
       fetchDocuments();
     } catch (error) {
       toast.error(
-        <div style={{ fontSize: "1.5rem", color: "red" }}>
+        <div style={{  color: "red" }}>
           Error al eliminar el documento
         </div>,
         { position: "top-right" }
@@ -97,114 +95,107 @@ function Documents() {
   };
 
   return (
-    <div>
-      <Header />
+  <Layout>
+    
+
+    <div className="w-full max-w-7xl mx-auto overflow-x-auto px-4 flex flex-col items-center my-10 gap-6">
       <HeaderPages text={"Documentos disponibles"} />
+      <Button
+        text="Crear Documento"
+        onClick={() => {
+          navigate("/createDocument");
+        }}
+        className="mb-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+      />
 
-      <div className="contenedorHome">
-        <Button
-          text="Crear Documento"
-          onClick={() => {
-            navigate("/createDocument");
-          }}
-          className="botonCrearDoc"
-        />
+      <table className="min-w-full table-auto border border-gray-300 shadow-md">
+        <thead className="bg-gray-100 text-gray-800">
+          <tr>
+            <th className="text-left py-3 px-4 border-b border-gray-300">Título</th>
+            <th className="text-left py-3 px-4 border-b border-gray-300">Última Versión</th>
+            <th className="text-left py-3 px-4 border-b border-gray-300">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {documentos.map((doc) => {
+            const ultimaVersion = doc.versiones.find(
+              (v: any) => v.es_ultima === true
+            );
 
-        <table className="tablaDocumentos">
-          <thead>
-            <tr>
-              <th>Título</th>
-              <th>Última Versión</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {documentos.map((doc) => {
-              const ultimaVersion = doc.versiones.find(
-                (v: any) => v.es_ultima === true
-              );
-
-              return (
-                <tr key={doc.id}>
-                  <td>{doc.titulo}</td>
-                  <td className="lastVersion">
-                    <div className="versionContainer">
-                      <span>
-                        {ultimaVersion ? ultimaVersion.numero_version : "—"}
-                      </span>
-                      <Link
-                        to={`/UploadDocument/${doc.id}`}
-                        onMouseEnter={(e) =>
-                          mostrarMensaje("Subir nueva versión", e)
-                        }
-                        onMouseLeave={ocultarMensaje}
-                      >
-                        <AiOutlineFileAdd size={30} />
-                      </Link>
-                    </div>
-                  </td>
-                  <td className="actions">
+            return (
+              <tr key={doc.id} className="hover:bg-gray-50 border-t border-gray-200">
+                <td className="py-2 px-4 whitespace-nowrap">{doc.titulo}</td>
+                <td className="py-2 px-4 whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <span>{ultimaVersion ? ultimaVersion.numero_version : "—"}</span>
                     <Link
-                      to={`/documents/${doc.id}`}
-                      onMouseEnter={(e) =>
-                        mostrarMensaje("Ver detalles del documento", e)
-                      }
+                      to={`/UploadDocument/${doc.id}`}
+                      onMouseEnter={(e) => mostrarMensaje("Subir nueva versión", e)}
                       onMouseLeave={ocultarMensaje}
+                      className="text-green-600 hover:text-green-800"
                     >
-                      <MdPreview size={30} />
+                      <AiOutlineFileAdd size={24} />
                     </Link>
+                  </div>
+                </td>
+                <td className="py-2 px-4 whitespace-nowrap flex items-center gap-4">
+                  <Link
+                    to={`/documents/${doc.id}`}
+                    onMouseEnter={(e) => mostrarMensaje("Ver detalles del documento", e)}
+                    onMouseLeave={ocultarMensaje}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    <MdPreview size={24} />
+                  </Link>
 
-                    <span
-                      onClick={() => handleDelete(doc.id)}
-                      onMouseEnter={(e) =>
-                        mostrarMensaje("Eliminar documento", e)
-                      }
-                      onMouseLeave={ocultarMensaje}
-                      style={{ cursor: "pointer", color: "red" }}
-                    >
-                      <TiTrash size={30} color="black" />
-                    </span>
+                  <span
+                    onClick={() => handleDelete(doc.id)}
+                    onMouseEnter={(e) => mostrarMensaje("Eliminar documento", e)}
+                    onMouseLeave={ocultarMensaje}
+                    className="cursor-pointer text-red-600 hover:text-red-800"
+                  >
+                    <TiTrash size={24} />
+                  </span>
 
-                    <Link
-                      to={`/modDocument/${doc.id}`}
-                      onMouseEnter={(e) =>
-                        mostrarMensaje("Modificar documento", e)
-                      }
-                      onMouseLeave={ocultarMensaje}
-                    >
-                      <MdMode size={30} />
-                    </Link>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Tooltip en hover */}
-      {mensajeHover && posicionHover && (
-        <div
-          style={{
-            position: "fixed",
-            top: posicionHover.top,
-            left: posicionHover.left,
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
-            color: "white",
-            padding: "6px 10px",
-            borderRadius: "6px",
-            fontSize: "0.85rem",
-            zIndex: 10000,
-            pointerEvents: "none",
-          }}
-        >
-          {mensajeHover}
-        </div>
-      )}
-
-      <Footer />
+                  <Link
+                    to={`/modDocument/${doc.id}`}
+                    onMouseEnter={(e) => mostrarMensaje("Modificar documento", e)}
+                    onMouseLeave={ocultarMensaje}
+                    className="text-yellow-600 hover:text-yellow-800"
+                  >
+                    <MdMode size={24} />
+                  </Link>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
-  );
+
+    {/* Tooltip en hover */}
+    {mensajeHover && posicionHover && (
+      <div
+        style={{
+          position: "fixed",
+          top: posicionHover.top,
+          left: posicionHover.left,
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          color: "white",
+          padding: "6px 10px",
+          borderRadius: "6px",
+          fontSize: "0.85rem",
+          zIndex: 10000,
+          pointerEvents: "none",
+        }}
+      >
+        {mensajeHover}
+      </div>
+    )}
+
+  </Layout>
+);
+
 }
 
 export default Documents;

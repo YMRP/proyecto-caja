@@ -1,14 +1,13 @@
 import Header from "../components/Header";
-import "../assets/styles/Users.css";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import type { Usuario } from "../types/types";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 import { TiTrash } from "react-icons/ti";
-import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import HeaderPages from "../components/HeaderPages";
+import Layout from "./Layout";
 
 function Users() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
@@ -59,50 +58,53 @@ function Users() {
     }
   };
   return (
-    <>
-      <Header />
-      <HeaderPages text="Usuarios" />
-      <div className="contenedorHome">
-        {error && <p className="error">{error}</p>}
+    <Layout>
+    
 
-        <table className="tablaUsuarios">
-          <thead>
-            <tr>
-              <th>Eliminar</th>
-              <th>Usuario</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usuarios.map((usuario) => (
-              <tr key={usuario.id}>
-                <td>
-                  <Button
-                    text={<TiTrash size={30} />}
-                    onClick={() => eliminarUsuario(usuario.id)}
-                    className="botonEliminar"
-                  />
-                </td>
-                <td style={{ paddingLeft: "1rem" }}>
-                  <Link
-                    to={`/usuario/${usuario.id}`}
-                    className="nombreUsuario"
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      height: "100%",
-                      fontSize: "1.8rem"
-                    }}
-                  >
-                    {usuario.nombre}
-                  </Link>
-                </td>
+      <div className="px-4 my-10 max-w-5xl mx-auto flex flex-col gap-6 text-center">
+        {error && (
+          <p className="text-red-500 text-center font-semibold mb-4">{error}</p>
+        )}
+        <HeaderPages text="Usuarios" />
+        <div className="overflow-x-auto rounded-lg shadow">
+          <table className="min-w-full bg-white divide-y divide-gray-200 text-left text-gray-800">
+            <thead className="bg-green-700 text-white">
+              <tr>
+                <th className="px-4 py-3">Eliminar</th>
+                <th className="px-4 py-3">Usuario</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {usuarios.map((usuario) => (
+                <tr
+                  key={usuario.id}
+                  className="hover:bg-gray-100 transition duration-150"
+                >
+                  <td className="px-4 py-2">
+                    <button
+                      onClick={() => eliminarUsuario(usuario.id)}
+                      className="text-red-600 hover:text-red-800 transition"
+                      title="Eliminar usuario"
+                    >
+                      <TiTrash size={24} />
+                    </button>
+                  </td>
+                  <td className="px-4 py-2">
+                    <Link
+                      to={`/usuario/${usuario.id}`}
+                      className="text-lg font-semibold text-green-800 hover:underline"
+                    >
+                      {usuario.nombre}
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-      <Footer />
-    </>
+
+    </Layout>
   );
 }
 

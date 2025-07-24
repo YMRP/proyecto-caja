@@ -1,25 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // <-- IMPORT
 import axios from "axios";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import HeaderPages from "../components/HeaderPages";
 import { toast } from "sonner";
-import "../assets/styles/Asignation.css";
+import type {AsignacionProps} from '../types/types'
+import Layout from "./Layout";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 
-interface Asignacion {
-  id: number;
-  version_id: number;
-  numero_version: string;
-  tipo_asignacion: "control" | "revision";
-  revisado: boolean;
-  fecha_revision: string | null;
-  documento_titulo: string;
-}
+
 
 function Asignation() {
-  const [asignaciones, setAsignaciones] = useState<Asignacion[]>([]);
+  const [asignaciones, setAsignaciones] = useState<AsignacionProps[]>([]);
   const accessToken = localStorage.getItem("access");
   const navigate = useNavigate(); // <-- Inicializa useNavigate
 
@@ -30,6 +21,7 @@ function Asignation() {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setAsignaciones(res.data);
+        console.log(res.data)
       } catch (error) {
         console.error("Error al obtener asignaciones:", error);
         toast.error(
@@ -51,6 +43,7 @@ function Asignation() {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       toast.success("Versión liberada correctamente");
+
       setAsignaciones((prev) =>
         prev.map((a) =>
           a.id === id
@@ -108,81 +101,86 @@ function Asignation() {
   // ... aquí sigue tu código handleLiberar y handleMarcarRevisado
 
   return (
-    <>
-      <Header />
-      <HeaderPages text="Asignaciones" />
-      <div className="asignacion-container" style={{ padding: "1rem" }}>
+  <Layout>
+    <div className="pt-20 px-4 min-h-screen bg-gray-50">
+          <HeaderPages text="Asignaciones" />
+
+      <div className="max-w-6xl mx-auto">
         <button
-          style={{
-            marginBottom: "1rem",
-            backgroundColor: "#007acc",
-            color: "white",
-            padding: "10px 20px",
-            borderRadius: "6px",
-            border: "none",
-            cursor: "pointer",
-            fontWeight: "600",
-          }}
           onClick={handleCrearAsignacion}
+          className="mb-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300"
         >
           Crear asignación
         </button>
 
         {asignaciones.length === 0 ? (
-          <p>No tienes asignaciones pendientes.</p>
+          <p className="text-gray-700 text-lg">No tienes asignaciones pendientes.</p>
         ) : (
-          <table className="tabla-asignaciones">
-            <thead>
-              <tr>
-                <th>Documento</th>
-                <th>Versión</th>
-                <th>Tipo</th>
-                <th>Revisado</th>
-                <th>Fecha Revisión</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {asignaciones.map((a) => (
-                <tr
-                  key={a.id}
-                  style={{
-                    backgroundColor: a.revisado ? "#d4edda" : "transparent",
-                  }}
-                >
-                  <td>{a.documento_titulo}</td>
-                  <td>{a.numero_version}</td>
-                  <td>
-                    {a.tipo_asignacion === "control" ? "Contralor" : "Usuario"}
-                  </td>
-                  <td>{a.revisado ? "Sí" : "No"}</td>
-                  <td>
-                    {a.fecha_revision
-                      ? new Date(a.fecha_revision).toLocaleString()
-                      : "-"}
-                  </td>
-                  <td>
-                    {!a.revisado &&
-                      (a.tipo_asignacion === "control" ? (
-                        <button onClick={() => handleLiberar(a.id)}>
-                          Liberar
-                        </button>
-                      ) : (
-                        <button onClick={() => handleMarcarRevisado(a.id)}>
-                          Marcar revisado
-                        </button>
-                      ))}
-                    {a.revisado && <span>✔</span>}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm">
+              <thead className="bg-green-800 text-white text-sm uppercase">
+                <tr>
+                  <th className="py-3 px-4 text-left">Documento</th>
+                  <th className="py-3 px-4 text-left">Versión</th>
+                  <th className="py-3 px-4 text-left">Fecha Asignación</th>
+                  <th className="py-3 px-4 text-left">Revisado</th>
+                  <th className="py-3 px-4 text-left">Fecha Revisión</th>
+                  <th className="py-3 px-4 text-left">Acción</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {asignaciones.map((a) => (
+                  <tr
+                    key={a.id}
+                    className={`border-b border-gray-200 ${
+                      a.revisado ? "bg-green-100" : "bg-white"
+                    }`}
+                  >
+                    <td className="py-3 px-4">{a.documento_titulo}</td>
+                    <td className="py-3 px-4">{a.numero_version}</td>
+                    <td className="py-3 px-4">
+                      {a.fecha_asignacion
+                        ? new Date(a.fecha_asignacion).toLocaleString()
+                        : "-"}
+                    </td>
+                    <td className="py-3 px-4">{a.revisado ? "Sí" : "No"}</td>
+                    <td className="py-3 px-4">
+                      {a.fecha_revision
+                        ? new Date(a.fecha_revision).toLocaleString()
+                        : "-"}
+                    </td>
+                    <td className="py-3 px-4">
+                      {!a.revisado ? (
+                        a.tipo_asignacion === "control" ? (
+                          <button
+                            onClick={() => handleLiberar(a.id)}
+                            className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-1 px-3 rounded transition duration-200"
+                          >
+                            Liberar
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleMarcarRevisado(a.id)}
+                            className="bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-3 rounded transition duration-200"
+                          >
+                            Marcar revisado
+                          </button>
+                        )
+                      ) : (
+                        <span className="text-green-700 text-lg font-bold">✔</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
-      <Footer />
-    </>
-  );
+    </div>
+  </Layout>
+);
+
 }
 
 export default Asignation;

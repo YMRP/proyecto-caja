@@ -1,4 +1,3 @@
-import "../assets/styles/Login.css";
 import Button from "../components/Button";
 import { toast } from "sonner";
 import React, { useState, useEffect } from "react";

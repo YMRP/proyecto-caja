@@ -1,12 +1,13 @@
 import { Router } from "../router";
 import { Toaster } from "sonner";
-
 function App() {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Toaster />
 
+
       <Router />
+
     </div>
   );
 }

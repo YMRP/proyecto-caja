@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import type { ChangeEvent } from "react";
-import "../assets/styles/ModProfile.css";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 import { toast } from "sonner";
 
@@ -16,7 +15,7 @@ export function ModProfile() {
   useEffect(() => {
     const fetchUserData = async () => {
       const loadingToast = toast.loading(
-        <div style={{ fontSize: "1.5rem", color: "black" }}>Cargando...</div>,
+        <div style={{  color: "black" }}>Cargando...</div>,
         {
           position: "top-right",
         }
@@ -67,14 +66,14 @@ export function ModProfile() {
       );
 
       toast.success(
-        <div style={{ fontSize: "1.5rem", color: "green" }}>
+        <div style={{  color: "green" }}>
           {response.data.mensaje}
         </div>,
         { position: "top-right" }
       );
     } catch (e: any) {
       toast.error(
-        <div style={{ fontSize: "1.5rem", color: "red" }}>
+        <div style={{  color: "red" }}>
           {"Error al actualizar perfil"}
         </div>,
         { position: "top-right" }
@@ -84,36 +83,72 @@ export function ModProfile() {
   };
 
   return (
-    <div className="contenedorPerfil editarPerfil">
-      <div className="campo">
-        <label htmlFor="">Nombre: </label>
-        <input
-          type="text"
-          placeholder="Nuevo nombre"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-        />
-      </div>
-      <div className="campo">
-        <label htmlFor="">Contraseña: </label>
-        <input
-          type="password"
-          placeholder="Nueva contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-
-      <div className="campo">
-        <label htmlFor="inputPhoto">Subir una foto</label>
-        <input type="file" onChange={handleFileChange} id="inputPhoto" />
-      </div>
-
-      <button onClick={modUser} className="modBotonPerfil">
-        Actualizar Perfil
-      </button>
+  <form
+    onSubmit={(e) => {
+      e.preventDefault();
+      modUser();
+    }}
+    className="w-full flex flex-col gap-6"
+  >
+    {/* Nombre */}
+    <div className="flex flex-col gap-2">
+      <label htmlFor="nombre" className="text-sm font-medium text-gray-700">
+        Nombre
+      </label>
+      <input
+        id="nombre"
+        type="text"
+        placeholder="Nuevo nombre"
+        value={nombre}
+        onChange={(e) => setNombre(e.target.value)}
+        className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+      />
     </div>
-  );
+
+    {/* Contraseña */}
+    <div className="flex flex-col gap-2">
+      <label
+        htmlFor="password"
+        className="text-sm font-medium text-gray-700"
+      >
+        Contraseña
+      </label>
+      <input
+        id="password"
+        type="password"
+        placeholder="Nueva contraseña"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+      />
+    </div>
+
+    {/* Subir foto */}
+    <div className="flex flex-col gap-2">
+      <label
+        htmlFor="inputPhoto"
+        className="text-sm font-medium text-gray-700"
+      >
+        Subir una foto
+      </label>
+      <input
+        type="file"
+        id="inputPhoto"
+        onChange={handleFileChange}
+        className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-600 file:text-white hover:file:bg-green-700"
+      />
+    </div>
+
+    {/* Botón */}
+    <button
+      type="submit"
+      className="bg-green-600 text-white py-2 px-6 rounded-md hover:bg-green-700 transition duration-200 font-semibold"
+    >
+      Actualizar Perfil
+    </button>
+  </form>
+);
+
 }
 
 export default ModProfile;

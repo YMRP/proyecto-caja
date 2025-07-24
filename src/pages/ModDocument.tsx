@@ -1,6 +1,5 @@
 import Header from "../components/Header";
 import { useState, useEffect } from "react";
-import "../assets/styles/CreateDocument.css";
 import HeaderPages from "../components/HeaderPages";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;

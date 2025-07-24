@@ -4,6 +4,7 @@ import axios from "axios";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { toast } from "sonner";
+import HeaderPages from "../components/HeaderPages";
 
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 
@@ -67,137 +68,126 @@ function Document() {
   return (
     <div>
       <Header />
-      <div className="document-table-container">
-        <h2 style={{ padding: "1rem" }}>{documento.titulo}</h2>
+      <div className="max-w-7xl mx-auto p-4 flex flex-col items-center my-10 gap-6">
+        <HeaderPages text={documento.titulo} />
 
-        <table className="tabla-documento">
-          <tbody>
+        <table className="w-full table-auto border border-gray-300 shadow-md">
+          <thead className="bg-gray-100 text-gray-800">
             <tr>
-              <td><strong>Referencia</strong></td>
-              <td>{documento.referencia}</td>
-            </tr>
-            <tr>
-              <td><strong>Proceso Operativo</strong></td>
-              <td>{documento.proceso_operativo}</td>
-            </tr>
-            <tr>
-              <td><strong>Categoría</strong></td>
-              <td>{documento.categoria}</td>
-            </tr>
-            <tr>
-              <td><strong>Área Operativa</strong></td>
-              <td>
-                {documento.area_operativa == null
-                  ? documento.area_operativa_otro
-                  : documento.area_operativa || "no especificado"}
-              </td>
-            </tr>
-            <tr>
-              <td><strong>Funcionarios que aplican</strong></td>
-              <td>
-                {documento.funcionarios_aplican_display == null
-                  ? documento.funcionarios_aplican_otro
-                  : documento.funcionarios_aplican_display || "no especificado"}
-              </td>
-            </tr>
-            <tr>
-              <td><strong>Autorizado por</strong></td>
-              <td>{documento.autorizado_por}</td>
-            </tr>
-            <tr>
-              <td><strong>Firmado por</strong></td>
-              <td>{documento.firmado_por}</td>
-            </tr>
-            <tr>
-              <td><strong>Órgano Aprobador</strong></td>
-              <td>{documento.organo_ejecutivo_aprobador}</td>
-            </tr>
-            <tr>
-              <td><strong>Versión actual</strong></td>
-              <td>{documento.version_actual}</td>
-            </tr>
-            <tr>
-              <td><strong>Fecha Aprobación</strong></td>
-              <td>{documento.fecha_aprobacion_ca}</td>
-            </tr>
-            <tr>
-              <td><strong>Fecha Revocación</strong></td>
-              <td>
-                {documento.fecha_revocacion === null ? (
-                  <p>Sin fecha de revocación</p>
-                ) : (
-                  <p>{documento.fecha_revocacion}</p>
-                )}
-              </td>
-            </tr>
-            <tr>
-              <td><strong>Última Revisión</strong></td>
-              <td>{documento.fecha_ultima_revision}</td>
-            </tr>
-            <tr>
-              <td><strong>Última Actualización</strong></td>
-              <td>{documento.fecha_ultima_actualizacion}</td>
-            </tr>
-            <tr>
-              <td><strong>Descripción</strong></td>
-              <td>{documento.descripcion}</td>
-            </tr>
-            <tr>
-              <td><strong>Número de Acuerdo</strong></td>
-              <td>{documento.numero_acuerdo}</td>
-            </tr>
-            <tr>
-              <td><strong>Número de Sesión Aprobación</strong></td>
-              <td>{documento.numero_sesion_aprobacion}</td>
-            </tr>
-            <tr>
-              <td><strong>Número de Sesión Ultima Acta</strong></td>
-              <td>{documento.numero_sesion_ultima_act}</td>
-            </tr>
-            <tr>
-              <td><strong>Usuario Creador</strong></td>
-              <td>{documento.nombre_usuario_creador}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h3 style={{ marginTop: "1rem", paddingLeft: "1rem" }}>Versiones:</h3>
-        <table className="tabla-versiones">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Versión</th>
-              <th>Fecha de Carga</th>
-              <th>Firmado / Autorizado</th>
-              <th>Archivo</th>
-              <th>Liberado</th>
+              <th className="py-2 px-4 border border-gray-300 text-left">#</th>
+              <th className="py-2 px-4 border border-gray-300 text-left">
+                Versión
+              </th>
+              <th className="py-2 px-4 border border-gray-300 text-left">
+                Fecha de Carga
+              </th>
+              <th className="py-2 px-4 border border-gray-300 text-left">
+                Firmado / Autorizado
+              </th>
+              <th className="py-2 px-4 border border-gray-300 text-left">
+                Archivo
+              </th>
+              <th className="py-2 px-4 border border-gray-300 text-left">
+                Liberado
+              </th>
             </tr>
           </thead>
           <tbody>
             {documento.versiones.map((v: any, idx: number) => (
-              <tr key={v.id}>
-                <td>{idx + 1}</td>
-                <td>{v.numero_version}</td>
-                <td>{v.fecha_carga?.slice(0, 10)}</td>
-                <td>{v.firmado_por} / {v.autorizado_por}</td>
-                <td>
+              <tr
+                key={v.id}
+                className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+              >
+                <td className="py-2 px-4 border border-gray-300">{idx + 1}</td>
+                <td className="py-2 px-4 border border-gray-300">
+                  {v.numero_version}
+                </td>
+                <td className="py-2 px-4 border border-gray-300">
+                  {v.fecha_carga?.slice(0, 10)}
+                </td>
+                <td className="py-2 px-4 border border-gray-300">
+                  {v.firmado_por} / {v.autorizado_por}
+                </td>
+                <td className="py-2 px-4 border border-gray-300">
                   <a
                     href={v.archivo_path}
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
                   >
                     Ver archivo ({v.tipo_archivo})
                   </a>
                 </td>
-                <td>
+                <td className="py-2 px-4 border border-gray-300 text-center">
                   {v.liberada ? (
                     "Sí"
+                  ) : v.usuario_asignado === usuarioActualId ? (
+                    <button
+                      onClick={() => liberarVersion(v.id)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded"
+                    >
+                      Liberar
+                    </button>
                   ) : (
-                    v.usuario_asignado === usuarioActualId ? (
-                      <button onClick={() => liberarVersion(v.id)}>Liberar</button>
-                    ) : "No"
+                    "No"
                   )}
                 </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <table className="w-full table-auto border border-gray-300 shadow-md mb-8">
+          <tbody>
+            {[
+              ["Referencia", documento.referencia],
+              ["Proceso Operativo", documento.proceso_operativo],
+              ["Categoría", documento.categoria],
+              [
+                "Área Operativa",
+                documento.area_operativa == null
+                  ? documento.area_operativa_otro
+                  : documento.area_operativa || "No especificado",
+              ],
+              [
+                "Funcionarios que aplican",
+                documento.funcionarios_aplican_display == null
+                  ? documento.funcionarios_aplican_otro
+                  : documento.funcionarios_aplican_display || "No especificado",
+              ],
+              ["Autorizado por", documento.autorizado_por],
+              ["Firmado por", documento.firmado_por],
+              ["Órgano Aprobador", documento.organo_ejecutivo_aprobador],
+              ["Versión actual", documento.version_actual],
+              ["Fecha Aprobación", documento.fecha_aprobacion_ca],
+              [
+                "Fecha Revocación",
+                documento.fecha_revocacion === null
+                  ? "Sin fecha de revocación"
+                  : documento.fecha_revocacion,
+              ],
+              ["Última Revisión", documento.fecha_ultima_revision],
+              ["Última Actualización", documento.fecha_ultima_actualizacion],
+              ["Descripción", documento.descripcion],
+              ["Número de Acuerdo", documento.numero_acuerdo],
+              [
+                "Número de Sesión Aprobación",
+                documento.numero_sesion_aprobacion,
+              ],
+              [
+                "Número de Sesión Ultima Acta",
+                documento.numero_sesion_ultima_act,
+              ],
+              ["Usuario Creador", documento.nombre_usuario_creador],
+            ].map(([label, value], idx) => (
+              <tr
+                key={idx}
+                className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+              >
+                <td className="py-2 px-4 font-semibold border border-gray-300 w-1/3">
+                  {label}
+                </td>
+                <td className="py-2 px-4 border border-gray-300">{value}</td>
               </tr>
             ))}
           </tbody>

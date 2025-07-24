@@ -1,15 +1,14 @@
-import HeaderPages from "./HeaderPages"
-import Header from "./Header"
-import Footer from "./Footer"
+import HeaderPages from "./HeaderPages";
+import Layout from "../pages/Layout";
 
 function NewAsignation() {
   return (
-    <>
-    <Header/>
-      <HeaderPages text="Nueva asignación"/>
-      <Footer/>
-    </>
-  )
+    <Layout>
+      <div className="flex flex-col  my-10 gap-6">
+        <HeaderPages text="Nueva asignación" />
+      </div>
+    </Layout>
+  );
 }
 
-export default NewAsignation
+export default NewAsignation;

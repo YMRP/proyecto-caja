@@ -2,7 +2,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import type { Usuario } from "../types/types";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
-import "../assets/styles/GetProfile.css";
 import { toast } from "sonner";
 
 export function GetProfile() {
@@ -13,7 +12,7 @@ export function GetProfile() {
   useEffect(() => {
     const obtenerPerfil = async () => {
       const loadingToast = toast.loading(
-        <div style={{ fontSize: "1.5rem", color: "black" }}>Cargando...</div>,
+        <div style={{ color: "black" }}>Cargando...</div>,
         {
           position: "top-right",
         }
@@ -38,48 +37,44 @@ export function GetProfile() {
   }, [accessToken]);
 
   return (
-    <div className="consultarUsuario">
-      {error && <p className="error">{error}</p>}
-      {usuario ? (
-        <div className="perfil-contenido">
-          {usuario.foto_perfil ? (
-            <div className="foto-perfil">
-              <img
-                src={usuario.foto_perfil || 'img/default.jpg'}
-                alt="Foto de perfil"
-                className="imagen-perfil"
-              />
-            </div>
-          ) : (
-             <img
-                src={"img/default.jpg"}
-                alt="Foto de perfil"
-                className="imagen-perfil"
-              />
-          )}
-          <div className="usuarioFields">
-            <p>
-              <strong>Nombre:</strong> {usuario.nombre}
-            </p>
-            <p>
-              <strong>Correo:</strong> {usuario.correo}
-            </p>
-            <p>
-              <strong>Rol:</strong> {usuario.rol}
-            </p>
-            <p>
-              <strong>Fecha de creación:</strong>
-              {usuario.fecha_creacion
-                ? new Date(usuario.fecha_creacion).toLocaleDateString()
-                : "Sin fecha"}
-            </p>
-          </div>
+  <div className="w-full flex justify-center">
+    {error && (
+      <p className="text-red-500 text-center font-semibold">{error}</p>
+    )}
+
+    {usuario ? (
+      <div className="w-full flex flex-col md:flex-row items-center gap-6">
+        {/* Imagen de perfil */}
+        <img
+          src={usuario.foto_perfil || "img/default.jpg"}
+          alt="Foto de perfil"
+          className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover ring-2 ring-green-500 shadow"
+        />
+
+        {/* Datos del usuario */}
+        <div className="text-center md:text-left">
+          <p className="text-lg font-semibold text-green-800">
+            {usuario.nombre}
+          </p>
+          <p className="text-gray-700">
+            <strong>Correo:</strong> {usuario.correo}
+          </p>
+          <p className="text-gray-700">
+            <strong>Rol:</strong> {usuario.rol}
+          </p>
+          <p className="text-gray-700">
+            <strong>Fecha de creación:</strong>{" "}
+            {usuario.fecha_creacion
+              ? new Date(usuario.fecha_creacion).toLocaleDateString()
+              : "Sin fecha"}
+          </p>
         </div>
-      ) : (
-        <p className="cargandoTexto">Cargando datos...</p>
-      )}
-    </div>
-  );
+      </div>
+    ) : (
+      <p className="text-gray-600 text-center">Cargando datos...</p>
+    )}
+  </div>
+);
 }
 
 export default GetProfile;

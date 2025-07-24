@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+.showMenu {
+  display: block !important;
+}

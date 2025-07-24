@@ -1,3 +1,5 @@
+import React, { type ReactNode } from "react";
+
 export type ButtonType = {
     type?: "button" | "submit" | "reset"; // este atributo es opcional
     text: string | React.ReactNode
@@ -9,6 +11,8 @@ export type ButtonType = {
 export type navElement = {
   href: string;
   value: string;
+  icon?: string  | ReactNode
+  onClick?: ()=> void
 };
 
 
@@ -42,4 +46,16 @@ type LogSesion = {
 
 export type HeaderPagesProps = {
   text: string
+  className?: string
+}
+
+export type AsignacionProps = {
+  id: number;
+  version_id: number;
+  numero_version: string;
+  tipo_asignacion: "control" | "revision";
+  revisado: boolean;
+  fecha_revision: string | null;
+  documento_titulo: string;
+  fecha_asignacion: string;
 }
