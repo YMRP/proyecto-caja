@@ -101,7 +101,7 @@ function Documents() {
     <div className="w-full max-w-7xl mx-auto overflow-x-auto px-4 flex flex-col items-center my-10 gap-6">
       <HeaderPages text={"Documentos disponibles"} />
       <Button
-        text="Crear Documento"
+        text="Crear carpeta"
         onClick={() => {
           navigate("/createDocument");
         }}

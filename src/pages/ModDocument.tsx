@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useParams, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import type { Usuario } from "../types/types";
+import Layout from "./Layout";
 
 function ModDocument() {
   const { id } = useParams();
@@ -44,12 +45,9 @@ function ModDocument() {
     const fetchUsuarios = async () => {
       try {
         const response = await axios.get(`${apiUrl}api/admin/usuarios/`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
         setUsuarios(response.data);
-        console.log(usuarios)
         return response.data;
       } catch (err: any) {
         console.error("Error al obtener usuarios:", err.message);
@@ -60,9 +58,7 @@ function ModDocument() {
     const fetchDocumento = async (usuarios: Usuario[]) => {
       try {
         const response = await axios.get(`${apiUrl}documentos-visibles/`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
 
         const doc = response.data.find((d: any) => d.id === Number(id));
@@ -124,42 +120,22 @@ function ModDocument() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const formData = new FormData();
-    if (archivo) {
-      formData.append("archivo_path", archivo);
-    }
-
+    if (archivo) formData.append("archivo_path", archivo);
     for (const key in formDataValues) {
       const value = formDataValues[key as keyof typeof formDataValues];
-      if (value !== null && value !== undefined && value !== "") {
-        if (key === "usuario_creador") {
-          formData.append(key, String(Number(value)));
-        } else {
-          formData.append(key, value);
-        }
+      if (value) {
+        formData.append(key, key === "usuario_creador" ? String(Number(value)) : value);
       }
     }
 
-    const loadingToast = toast.loading(
-      <div style={{ fontSize: "1.5rem", color: "black" }}>Cargando...</div>,
-      {
-        position: "top-right",
-      }
-    );
+    const loadingToast = toast.loading("Cargando...", { position: "top-right" });
 
     try {
-      const response = await axios.put(
-        `${apiUrl}api/documento/${id}/`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axios.put(`${apiUrl}api/documento/${id}/`, formData, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
 
-      console.log("Documento modificado:", response.data);
       toast.success(
         <div style={{ fontSize: "1.5rem", color: "green" }}>
           {response.data.mensaje || "Documento modificado correctamente"}
@@ -169,11 +145,9 @@ function ModDocument() {
 
       navigate("/documents");
     } catch (error: any) {
-      console.error("Error al modificar el documento:", error);
-      console.log("Respuesta del servidor:", error.response?.data);
       toast.error(
         <div style={{ fontSize: "1.5rem", color: "red" }}>
-          {"Error al modificar el documento"}
+          Error al modificar el documento
         </div>,
         { position: "top-right" }
       );
@@ -182,344 +156,72 @@ function ModDocument() {
     }
   };
 
-
   return (
-    <div>
-      <Header />
+    <Layout>
+    <div className="min-h-screen bg-gray-50 my-10">
       <HeaderPages text="Modificar Documento" />
-      <div className="contenedorHome">
-        <form onSubmit={handleSubmit} encType="multipart/form-data">
-          <table className="formulario-tabla">
+      <div className="max-w-6xl mx-auto px-4 py-10">
+        <form
+          onSubmit={handleSubmit}
+          encType="multipart/form-data"
+          className="bg-white p-6 rounded-xl shadow-md"
+        >
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+            Formulario de modificación
+          </h2>
+          <table className="w-full text-sm text-left border border-gray-300 rounded overflow-hidden">
             <tbody>
-              <tr>
-                <th>Referencia</th>
-                <td>
-                  <input
-                    name="referencia"
-                    value={formDataValues.referencia}
-                    onChange={handleChange}
-                    required
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Título</th>
-                <td>
-                  <input
-                    name="titulo"
-                    value={formDataValues.titulo}
-                    onChange={handleChange}
-                    required
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Descripción</th>
-                <td>
-                  <textarea
-                    name="descripcion"
-                    value={formDataValues.descripcion}
-                    onChange={handleChange}
-                    required
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Categoría</th>
-                <td>
-                  <select
-                    name="categoria"
-                    value={formDataValues.categoria}
-                    onChange={handleChange}
-                  >
-                    <option value="interno">Interno</option>
-                    <option value="confidencial">Confidencial</option>
-                    <option value="restringido">Restringido</option>
-                    <option value="publico">Público</option>
-                  </select>
-                </td>
-              </tr>
-              <tr>
-                <th>Fecha Última Revisión</th>
-                <td>
-                  <input
-                    type="date"
-                    name="fecha_ultima_revision"
-                    value={formDataValues.fecha_ultima_revision}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Fecha Última Actualización</th>
-                <td>
-                  <input
-                    type="date"
-                    name="fecha_ultima_actualizacion"
-                    value={formDataValues.fecha_ultima_actualizacion}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Fecha Aprobación CA</th>
-                <td>
-                  <input
-                    type="date"
-                    name="fecha_aprobacion_ca"
-                    value={formDataValues.fecha_aprobacion_ca}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Fecha Revocación</th>
-                <td>
-                  <input
-                    type="date"
-                    name="fecha_revocacion"
-                    value={formDataValues.fecha_revocacion}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Órgano Ejecutivo Aprobador</th>
-                <td>
-                  <input
-                    name="organo_ejecutivo_aprobador"
-                    value={formDataValues.organo_ejecutivo_aprobador}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Número Sesión Aprobación</th>
-                <td>
-                  <input
-                    name="numero_sesion_aprobacion"
-                    value={formDataValues.numero_sesion_aprobacion}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Área Operativa</th>
-                <td>
-                  <select
-                    name="area_operativa"
-                    value={formDataValues.area_operativa}
-                    onChange={handleChange}
-                  >
-                    <option value="">Selecciona una opción</option>
-                    <option value="administrativa">Administrativa</option>
-                    <option value="gestion_de_riesgos">
-                      Gestión de Riesgos
-                    </option>
-                    <option value="auditoria">Auditoría</option>
-                    <option value="seguridad_de_la_informacion">
-                      Seguridad de la Información
-                    </option>
-                    <option value="recursos_humanos">Recursos Humanos</option>
-                    <option value="credito">Crédito</option>
-                    <option value="cobranza">Cobranza</option>
-                    <option value="tecnologias_de_la_informacion">
-                      Tecnologías de la Información
-                    </option>
-                    <option value="tesoreria">Tesorería</option>
-                    <option value="contabilidad">Contabilidad</option>
-                    <option value="pld">PLD</option>
-                    <option value="mercadotecnia">Mercadotecnia</option>
-                    <option value="operaciones">Operaciones</option>
-                  </select>
-                </td>
-              </tr>
-              <tr>
-                <th>Área Operativa Otro</th>
-                <td>
-                  <input
-                    name="area_operativa_otro"
-                    value={formDataValues.area_operativa_otro}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Funcionarios Aplican</th>
-                <td>
-                  <select
-                    name="funcionarios_aplican"
-                    value={formDataValues.funcionarios_aplican}
-                    onChange={handleChange}
-                  >
-                    <option value="">Selecciona un funcionario</option>
-                    <option value="gerente_general">Gerente General</option>
-                    <option value="subgerente">Subgerente</option>
-                    <option value="jefe_de_proyectos_especiales">
-                      Jefe de Proyectos Especiales
-                    </option>
-                    <option value="controloria">Controlaría</option>
-                    <option value="administracion_de_riegos">
-                      Administración de Riesgos
-                    </option>
-                    <option value="auditor_interno">Auditor Interno</option>
-                    <option value="auxiliar_de_auditor_interno">
-                      Auxiliar de Auditor Interno
-                    </option>
-                    <option value="oficial_de_seguridad_de_la_informacion">
-                      Oficial de Seguridad de la Información
-                    </option>
-                    <option value="jefe_de_desarrollo_humano">
-                      Jefe de Desarrollo Humano
-                    </option>
-                    <option value="capacitador">Capacitador</option>
-                    <option value="jefe_de_credito">Jefe de Crédito</option>
-                    <option value="supervisor_de_credito">
-                      Supervisor de Crédito
-                    </option>
-                    <option value="controlaria_de_credito">
-                      Controlaría de Crédito
-                    </option>
-                    <option value="analista_de_credito">
-                      Analista de Crédito
-                    </option>
-                    <option value="supervisor_de_uens">
-                      Supervisor de UENS
-                    </option>
-                    <option value="encargado_de_uens">Encargado de UENS</option>
-                    <option value="jefe_de_cobranza">Jefe de Cobranza</option>
-                    <option value="supervisor_de_cobranza">
-                      Supervisor de Cobranza
-                    </option>
-                    <option value="asesores_de_cobranza">
-                      Asesores de Cobranza
-                    </option>
-                    <option value="jefe_de_captacion">Jefe de Captación</option>
-                    <option value="auxiliar_de_captacion">
-                      Auxiliar de Captación
-                    </option>
-                    <option value="jefe_de_sistemas">Jefe de Sistemas</option>
-                    <option value="auxiliar_de_sistemas">
-                      Auxiliar de Sistemas
-                    </option>
-                    <option value="jefe_de_tesoreria">Jefe de Tesorería</option>
-                    <option value="jefe_de_ contabilidad">
-                      Jefe de Contabilidad
-                    </option>
-                    <option value="auxiliar de contabilidad">
-                      Auxiliar de Contabilidad
-                    </option>
-                    <option value="oficial de cumplimiento">
-                      Oficial de Cumplimiento
-                    </option>
-                    <option value="auxiliar de oficial de cumplimiento">
-                      Auxiliar de Oficial de Cumplimiento
-                    </option>
-                    <option value="jefe de mercadotecnia">
-                      Jefe de Mercadotecnia
-                    </option>
-                    <option value="auxiliar de mercadotecnia">
-                      Auxiliar de Mercadotecnia
-                    </option>
-                    <option value="asesores de servicios multiples">
-                      Asesores de Servicios Múltiples
-                    </option>
-                    <option value="auxiliares de servicios multiples">
-                      Auxiliares de Servicios Múltiples
-                    </option>
-                    <option value="cajeros">Cajeros</option>
-                    <option value="volantes generales">
-                      Volantes Generales
-                    </option>
-                    <option value="encargado de archivo">
-                      Encargado de Archivo
-                    </option>
-                    <option value="auxiliar de archivo">
-                      Auxiliar de Archivo
-                    </option>
-                  </select>
-                </td>
-              </tr>
-              <tr>
-                <th>Funcionarios Aplican Otro</th>
-                <td>
-                  <input
-                    name="funcionarios_aplican_otro"
-                    value={formDataValues.funcionarios_aplican_otro}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Proceso Operativo</th>
-                <td>
-                  <input
-                    name="proceso_operativo"
-                    value={formDataValues.proceso_operativo}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Número Sesión Última Actualización</th>
-                <td>
-                  <input
-                    name="numero_sesion_ultima_act"
-                    value={formDataValues.numero_sesion_ultima_act}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Número de Acuerdo</th>
-                <td>
-                  <input
-                    name="numero_acuerdo"
-                    value={formDataValues.numero_acuerdo}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
-             
-              <tr>
-                <th>Versión Actual</th>
-                <td>
-                  <input
-                    type="number"
-                    min={1}
-                    name="version_actual"
-                    value={formDataValues.version_actual}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Firmado por</th>
-                <td>
-                  <input
-                    name="firmado_por"
-                    value={formDataValues.firmado_por}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Autorizado por</th>
-                <td>
-                  <input
-                    name="autorizado_por"
-                    value={formDataValues.autorizado_por}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
+              {Object.entries(formDataValues).map(([key, value]) => (
+                <tr key={key} className="border-t border-gray-200">
+                  <th className="bg-gray-100 px-4 py-3 font-medium capitalize w-1/3">
+                    {key.replace(/_/g, " ")}
+                  </th>
+                  <td className="px-4 py-2">
+                    {key === "descripcion" ? (
+                      <textarea
+                        name={key}
+                        value={value}
+                        onChange={handleChange}
+                        className="w-full border rounded px-3 py-2 h-28"
+                      />
+                    ) : key === "categoria" || key === "area_operativa" || key === "funcionarios_aplican" ? (
+                      <select
+                        name={key}
+                        value={value}
+                        onChange={handleChange}
+                        className="w-full border rounded px-3 py-2"
+                      >
+                        <option value="">Selecciona una opción</option>
+                        <option value="interno">Interno</option>
+                        <option value="confidencial">Confidencial</option>
+                        <option value="restringido">Restringido</option>
+                        <option value="publico">Público</option>
+                      </select>
+                    ) : (
+                      <input
+                        name={key}
+                        value={value}
+                        onChange={handleChange}
+                        className="w-full border rounded px-3 py-2"
+                      />
+                    )}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
-          <button type="submit">Guardar Cambios</button>
+          <div className="pt-6 text-right">
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md shadow"
+            >
+              Guardar Cambios
+            </button>
+          </div>
         </form>
       </div>
-      <Footer />
     </div>
+    </Layout>
   );
 }
 
