@@ -30,7 +30,7 @@ function AreaSelected() {
   return (
     <Layout>
       <div className="py-10 px-6">
-        <h1 className="text-3xl font-bold mb-8 text-center capitalize">
+        <h1 className="text-3xl mb-8 text-center capitalize">
           Área: {area?.replace(/_/g, " ")}
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
