@@ -1,11 +1,9 @@
-import Header from "../components/Header";
 import { useState, useEffect } from "react";
 import HeaderPages from "../components/HeaderPages";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 import { toast } from "sonner";
 import { useParams, useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
 import type { Usuario } from "../types/types";
 import Layout from "./Layout";
 
@@ -38,7 +36,6 @@ function ModDocument() {
     firmado_por: "",
     autorizado_por: "",
   });
-
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
 
   useEffect(() => {
@@ -169,6 +166,7 @@ function ModDocument() {
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">
             Formulario de modificación
           </h2>
+
           <table className="w-full text-sm text-left border border-gray-300 rounded overflow-hidden">
             <tbody>
               {Object.entries(formDataValues).map(([key, value]) => (
