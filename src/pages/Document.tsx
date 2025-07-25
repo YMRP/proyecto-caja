@@ -14,7 +14,6 @@ function Document() {
   const [usuarioActualId, setUsuarioActualId] = useState<number | null>(null);
   const accessToken = localStorage.getItem("access");
 
-  // Obtener usuario actual desde el JWT
   useEffect(() => {
     const access = localStorage.getItem("access");
     if (access) {
@@ -23,7 +22,6 @@ function Document() {
     }
   }, []);
 
-  // Obtener datos del documento
   useEffect(() => {
     async function fetchDocument() {
       try {
@@ -35,7 +33,6 @@ function Document() {
         const docFiltrado = response.data.find(
           (doc: any) => doc.id === Number(id)
         );
-        console.log(response.data)
         setDocumento(docFiltrado);
       } catch (error) {
         console.error("Error al obtener documento:", error);
@@ -45,7 +42,6 @@ function Document() {
     fetchDocument();
   }, [id]);
 
-  // Función para liberar una versión
   const liberarVersion = async (versionId: number) => {
     try {
       await axios.post(`${apiUrl}api/liberar-version/${versionId}/`, null, {
@@ -76,11 +72,11 @@ function Document() {
           <thead className="bg-gray-100 text-gray-800">
             <tr>
               <th className="py-2 px-4 border border-gray-300 text-left">#</th>
-               <th className="py-2 px-4 border border-gray-300 text-left">Tipo Categoría</th>
+              <th className="py-2 px-4 border border-gray-300 text-left">Nombre Archivo</th>
+              <th className="py-2 px-4 border border-gray-300 text-left">Tipo Categoría</th>
               <th className="py-2 px-4 border border-gray-300 text-left">Versión</th>
               <th className="py-2 px-4 border border-gray-300 text-left">Fecha de Carga</th>
               <th className="py-2 px-4 border border-gray-300 text-left">Firmado / Autorizado</th>
-             
               <th className="py-2 px-4 border border-gray-300 text-left">Archivo</th>
               <th className="py-2 px-4 border border-gray-300 text-left">Liberado</th>
             </tr>
@@ -92,8 +88,8 @@ function Document() {
                 className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
               >
                 <td className="py-2 px-4 border border-gray-300">{idx + 1}</td>
-                                <td className="py-2 px-4 border border-gray-300">{v.tipo_categoria_display || "No especificado"}</td>
-
+                <td className="py-2 px-4 border border-gray-300">{v.nombre_archivo || "Sin nombre"}</td>
+                <td className="py-2 px-4 border border-gray-300">{v.tipo_categoria_display || "No especificado"}</td>
                 <td className="py-2 px-4 border border-gray-300">{v.numero_version}</td>
                 <td className="py-2 px-4 border border-gray-300">{v.fecha_carga?.slice(0, 10)}</td>
                 <td className="py-2 px-4 border border-gray-300">{v.firmado_por} / {v.autorizado_por}</td>

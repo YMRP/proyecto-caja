@@ -17,6 +17,7 @@ function UploadDocument() {
   const [formDataValues, setFormDataValues] = useState({
     tipo_categoria: "",
     nombre_documento: "",
+    nombre_archivo: "",
     numero_version: "",
     archivo: null as File | null,
     tipo_archivo: "PDF",
@@ -108,6 +109,8 @@ function UploadDocument() {
     formData.append("firmado_por", formDataValues.firmado_por);
     formData.append("autorizado_por", formDataValues.autorizado_por);
     formData.append("es_ultima", formDataValues.es_ultima.toString());
+    formData.append("nombre_archivo", formDataValues.nombre_archivo);
+
 
     if (formDataValues.archivo) {
       formData.append("archivo_path", formDataValues.archivo);
@@ -139,6 +142,7 @@ function UploadDocument() {
       setFormDataValues({
         tipo_categoria: "",
         nombre_documento: nombreDocumento,
+        nombre_archivo: "",
         numero_version: "",
         archivo: null,
         tipo_archivo: "PDF",
@@ -198,6 +202,20 @@ function UploadDocument() {
                 <option value="flujograma">Flujograma</option>
                 <option value="otro">Otro</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block font-medium mb-1">
+                Nombre del archivo
+              </label>
+              <input
+                type="text"
+                name="nombre_archivo"
+                value={formDataValues.nombre_archivo}
+                onChange={handleInputChange}
+                className="w-full border rounded px-3 py-2"
+                required
+              />
             </div>
 
             <div>

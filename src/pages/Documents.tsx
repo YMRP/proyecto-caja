@@ -130,7 +130,7 @@ function Documents() {
                     <span>{ultimaVersion ? ultimaVersion.numero_version : "—"}</span>
                     <Link
                       to={`/UploadDocument/${doc.id}`}
-                      onMouseEnter={(e) => mostrarMensaje("Subir nueva versión", e)}
+                      onMouseEnter={(e) => mostrarMensaje("Subir nuevo archivo", e)}
                       onMouseLeave={ocultarMensaje}
                       className="text-green-600 hover:text-green-800"
                     >
