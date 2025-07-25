@@ -12,7 +12,23 @@ function Document() {
   const { id } = useParams();
   const [documento, setDocumento] = useState<any | null>(null);
   const [usuarioActualId, setUsuarioActualId] = useState<number | null>(null);
+  const [filtroCategoria, setFiltroCategoria] = useState<string>("");
   const accessToken = localStorage.getItem("access");
+
+  // Opciones con valor interno y etiqueta legible
+  const opcionesCategorias = [
+    { value: "", label: "Todas" },
+    { value: "anexo", label: "Anexo" },
+    { value: "manual", label: "Manual" },
+    { value: "proceso", label: "Proceso" },
+    { value: "ficha_tecnica", label: "Ficha Técnica" },
+    { value: "capacitacion", label: "Capacitación" },
+    { value: "comunicado", label: "Comunicado" },
+    { value: "procedimiento", label: "Procedimiento" },
+    { value: "formato", label: "Formato" },
+    { value: "flujograma", label: "Flujograma" },
+    { value: "otro", label: "Otro" },
+  ];
 
   useEffect(() => {
     const access = localStorage.getItem("access");
@@ -67,6 +83,27 @@ function Document() {
       <div className="max-w-7xl mx-auto p-4 flex flex-col items-center my-10 gap-6">
         <HeaderPages text={documento.titulo} />
 
+        {/* Filtro de categoría */}
+        {documento.versiones.length > 0 && (
+          <div className="w-full flex justify-end items-center gap-2 mb-4">
+            <label htmlFor="filtroCategoria" className="text-sm font-medium">
+              Filtrar por categoría:
+            </label>
+            <select
+              id="filtroCategoria"
+              value={filtroCategoria}
+              onChange={(e) => setFiltroCategoria(e.target.value)}
+              className="border border-gray-300 rounded px-3 py-1 text-sm"
+            >
+              {opcionesCategorias.map(({ value, label }) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         {/* Tabla de versiones */}
         <table className="w-full table-auto border border-gray-300 shadow-md">
           <thead className="bg-gray-100 text-gray-800">
@@ -82,43 +119,48 @@ function Document() {
             </tr>
           </thead>
           <tbody>
-            {documento.versiones.map((v: any, idx: number) => (
-              <tr
-                key={v.id}
-                className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
-              >
-                <td className="py-2 px-4 border border-gray-300">{idx + 1}</td>
-                <td className="py-2 px-4 border border-gray-300">{v.nombre_archivo || "Sin nombre"}</td>
-                <td className="py-2 px-4 border border-gray-300">{v.tipo_categoria_display || "No especificado"}</td>
-                <td className="py-2 px-4 border border-gray-300">{v.numero_version}</td>
-                <td className="py-2 px-4 border border-gray-300">{v.fecha_carga?.slice(0, 10)}</td>
-                <td className="py-2 px-4 border border-gray-300">{v.firmado_por} / {v.autorizado_por}</td>
-                <td className="py-2 px-4 border border-gray-300">
-                  <a
-                    href={v.archivo_path}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                  >
-                    Ver archivo ({v.tipo_archivo})
-                  </a>
-                </td>
-                <td className="py-2 px-4 border border-gray-300 text-center">
-                  {v.liberada ? (
-                    "Sí"
-                  ) : v.usuario_asignado === usuarioActualId ? (
-                    <button
-                      onClick={() => liberarVersion(v.id)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded"
+            {documento.versiones
+              .filter(
+                (v: any) =>
+                  !filtroCategoria || v.tipo_categoria === filtroCategoria
+              )
+              .map((v: any, idx: number) => (
+                <tr
+                  key={v.id}
+                  className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                >
+                  <td className="py-2 px-4 border border-gray-300">{idx + 1}</td>
+                  <td className="py-2 px-4 border border-gray-300">{v.nombre_archivo || "Sin nombre"}</td>
+                  <td className="py-2 px-4 border border-gray-300">{v.tipo_categoria_display || "No especificado"}</td>
+                  <td className="py-2 px-4 border border-gray-300">{v.numero_version}</td>
+                  <td className="py-2 px-4 border border-gray-300">{v.fecha_carga?.slice(0, 10)}</td>
+                  <td className="py-2 px-4 border border-gray-300">{v.firmado_por} / {v.autorizado_por}</td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    <a
+                      href={v.archivo_path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
                     >
-                      Liberar
-                    </button>
-                  ) : (
-                    "No"
-                  )}
-                </td>
-              </tr>
-            ))}
+                      Ver archivo ({v.tipo_archivo})
+                    </a>
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300 text-center">
+                    {v.liberada ? (
+                      "Sí"
+                    ) : v.usuario_asignado === usuarioActualId ? (
+                      <button
+                        onClick={() => liberarVersion(v.id)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded"
+                      >
+                        Liberar
+                      </button>
+                    ) : (
+                      "No"
+                    )}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
 
