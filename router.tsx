@@ -13,6 +13,7 @@ import UploadDocument from "./src/pages/UploadDocument";
 import NewPassword from "./src/pages/NewPassword";
 import Asignation from "./src/pages/Asignation";
 import NewAsignation from "./src/components/NewAsignation";
+import AreaSelected from "./src/pages/AreaSelected";
 
 export function Router() {
   return (
@@ -32,6 +33,8 @@ export function Router() {
         <Route path="/newPassword" element={<NewPassword/>}/>
         <Route path="/asignations/:id" element={<Asignation/>}/>
         <Route path="/newAsignation/:id" element={<NewAsignation/>}/>
+        <Route path="/area/:area" element={<AreaSelected />} />
+
       </Routes>
     </BrowserRouter>
   );
