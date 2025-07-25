@@ -19,7 +19,7 @@ function Document() {
     const access = localStorage.getItem("access");
     if (access) {
       const tokenPayload = JSON.parse(atob(access.split(".")[1]));
-      setUsuarioActualId(tokenPayload.user_id); // ajusta según tu payload
+      setUsuarioActualId(tokenPayload.user_id);
     }
   }, []);
 
@@ -32,10 +32,10 @@ function Document() {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-
         const docFiltrado = response.data.find(
           (doc: any) => doc.id === Number(id)
         );
+        console.log(response.data)
         setDocumento(docFiltrado);
       } catch (error) {
         console.error("Error al obtener documento:", error);
@@ -54,7 +54,7 @@ function Document() {
         },
       });
       toast.success("Versión liberada correctamente");
-      window.location.reload(); // Recargar para reflejar el cambio
+      window.location.reload();
     } catch (err) {
       toast.error("Error al liberar versión");
       console.error(err);
@@ -71,25 +71,18 @@ function Document() {
       <div className="max-w-7xl mx-auto p-4 flex flex-col items-center my-10 gap-6">
         <HeaderPages text={documento.titulo} />
 
+        {/* Tabla de versiones */}
         <table className="w-full table-auto border border-gray-300 shadow-md">
           <thead className="bg-gray-100 text-gray-800">
             <tr>
               <th className="py-2 px-4 border border-gray-300 text-left">#</th>
-              <th className="py-2 px-4 border border-gray-300 text-left">
-                Versión
-              </th>
-              <th className="py-2 px-4 border border-gray-300 text-left">
-                Fecha de Carga
-              </th>
-              <th className="py-2 px-4 border border-gray-300 text-left">
-                Firmado / Autorizado
-              </th>
-              <th className="py-2 px-4 border border-gray-300 text-left">
-                Archivo
-              </th>
-              <th className="py-2 px-4 border border-gray-300 text-left">
-                Liberado
-              </th>
+               <th className="py-2 px-4 border border-gray-300 text-left">Tipo Categoría</th>
+              <th className="py-2 px-4 border border-gray-300 text-left">Versión</th>
+              <th className="py-2 px-4 border border-gray-300 text-left">Fecha de Carga</th>
+              <th className="py-2 px-4 border border-gray-300 text-left">Firmado / Autorizado</th>
+             
+              <th className="py-2 px-4 border border-gray-300 text-left">Archivo</th>
+              <th className="py-2 px-4 border border-gray-300 text-left">Liberado</th>
             </tr>
           </thead>
           <tbody>
@@ -99,15 +92,11 @@ function Document() {
                 className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
               >
                 <td className="py-2 px-4 border border-gray-300">{idx + 1}</td>
-                <td className="py-2 px-4 border border-gray-300">
-                  {v.numero_version}
-                </td>
-                <td className="py-2 px-4 border border-gray-300">
-                  {v.fecha_carga?.slice(0, 10)}
-                </td>
-                <td className="py-2 px-4 border border-gray-300">
-                  {v.firmado_por} / {v.autorizado_por}
-                </td>
+                                <td className="py-2 px-4 border border-gray-300">{v.tipo_categoria_display || "No especificado"}</td>
+
+                <td className="py-2 px-4 border border-gray-300">{v.numero_version}</td>
+                <td className="py-2 px-4 border border-gray-300">{v.fecha_carga?.slice(0, 10)}</td>
+                <td className="py-2 px-4 border border-gray-300">{v.firmado_por} / {v.autorizado_por}</td>
                 <td className="py-2 px-4 border border-gray-300">
                   <a
                     href={v.archivo_path}
@@ -137,6 +126,7 @@ function Document() {
           </tbody>
         </table>
 
+        {/* Tabla de metadatos del documento */}
         <table className="w-full table-auto border border-gray-300 shadow-md mb-8">
           <tbody>
             {[

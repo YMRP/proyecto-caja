@@ -6,6 +6,7 @@ const apiUrl = import.meta.env.VITE_URL_BACKEND.replace(/\/+$/, "");
 import { toast } from "sonner";
 import type { Usuario } from "../types/types";
 import Layout from "./Layout";
+
 function UploadDocument() {
   const { id } = useParams();
   const accessToken = localStorage.getItem("access");
@@ -14,11 +15,12 @@ function UploadDocument() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
 
   const [formDataValues, setFormDataValues] = useState({
+    tipo_categoria: "",
     nombre_documento: "",
     numero_version: "",
     archivo: null as File | null,
     tipo_archivo: "PDF",
-    usuario_editor: "", // Aunque no se envía, puede ser útil mostrar en UI
+    usuario_editor: "",
     firmado_por: "",
     autorizado_por: "",
     es_ultima: false,
@@ -92,8 +94,14 @@ function UploadDocument() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!formDataValues.tipo_categoria) {
+      toast.error("Por favor, selecciona un tipo de documento");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("documento", String(Number(id)));
+    formData.append("tipo_categoria", formDataValues.tipo_categoria);
     formData.append("nombre_documento", formDataValues.nombre_documento);
     formData.append("numero_version", formDataValues.numero_version);
     formData.append("tipo_archivo", formDataValues.tipo_archivo);
@@ -106,26 +114,30 @@ function UploadDocument() {
     }
 
     const loadingToast = toast.loading(
-      <div style={{ fontSize: "1.5rem", color: "black" }}>Cargando...</div>,
+      <div style={{ color: "black" }}>Cargando...</div>,
       {
         position: "top-right",
       }
     );
 
     try {
+      console.log("Enviando datos:", {
+        tipo_categoria: formDataValues.tipo_categoria,
+        // ... otros campos
+      });
+
       await axios.post(`${apiUrl}/api/crear-version/`, formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
       toast.success(
-        <div style={{ fontSize: "1.5rem", color: "green" }}>
-          {"Versión subida con éxito"}
-        </div>,
+        <div style={{ color: "green" }}>{"Versión subida con éxito"}</div>,
         { position: "top-right" }
       );
 
       setFormDataValues({
+        tipo_categoria: "",
         nombre_documento: nombreDocumento,
         numero_version: "",
         archivo: null,
@@ -150,118 +162,147 @@ function UploadDocument() {
 
   return (
     <Layout>
-      <HeaderPages text="Subir nueva versión de documento" />
-      <form
-        onSubmit={handleSubmit}
-        encType="multipart/form-data"
-        className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md my-10"
-      >
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-          Nueva versión: {nombreDocumento}
-        </h2>
+      <div className="my-10 flex flex-col gap-6">
+        <HeaderPages text="Subir nueva versión de documento" />
+        <form
+          onSubmit={handleSubmit}
+          encType="multipart/form-data"
+          className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md"
+        >
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+            Nueva versión: {nombreDocumento}
+          </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div>
-            <label className="block font-medium mb-1">Número de versión</label>
-            <input
-              type="number"
-              name="numero_version"
-              value={formDataValues.numero_version}
-              onChange={handleInputChange}
-              min={1}
-              required
-              className="w-full border rounded px-3 py-2"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Selector de tipo_categoria */}
+            <div>
+              <label className="block font-medium mb-1">
+                Tipo de documento
+              </label>
+              <select
+                name="tipo_categoria"
+                value={formDataValues.tipo_categoria}
+                onChange={handleInputChange}
+                className="w-full border rounded px-3 py-2"
+                required
+              >
+                <option value="">Selecciona tipo</option>
+                <option value="manual">Manual</option>
+                <option value="anexo">Anexo</option>
+                <option value="proceso">Proceso</option>
+                <option value="ficha_tecnica">Ficha Técnica</option>
+                <option value="capacitacion">Capacitación</option>
+                <option value="comunicado">Comunicado</option>
+                <option value="formato">Formato</option>
+                <option value="procedimiento">Procedimiento</option>
+                <option value="flujograma">Flujograma</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block font-medium mb-1">
+                Número de versión
+              </label>
+              <input
+                type="number"
+                name="numero_version"
+                value={formDataValues.numero_version}
+                onChange={handleInputChange}
+                min={1}
+                required
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+
+            <div>
+              <label className="block font-medium mb-1">Archivo</label>
+              <input
+                type="file"
+                name="archivo_path"
+                accept=".pdf,.xlsx,.pptx,.docx"
+                onChange={handleInputChange}
+                required
+                className="w-full"
+              />
+            </div>
+
+            <div>
+              <label className="block font-medium mb-1">Tipo de archivo</label>
+              <select
+                name="tipo_archivo"
+                value={formDataValues.tipo_archivo}
+                onChange={handleInputChange}
+                className="w-full border rounded px-3 py-2"
+              >
+                <option value="PDF">PDF</option>
+                <option value="XLSX">XLSX</option>
+                <option value="PPTX">PPTX</option>
+                <option value="DOCX">DOCX</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block font-medium mb-1">Usuario editor</label>
+              <select
+                name="usuario_editor"
+                value={formDataValues.usuario_editor}
+                onChange={handleInputChange}
+                className="w-full border rounded px-3 py-2"
+              >
+                <option value="">Selecciona un usuario</option>
+                {usuarios.map((usuario) => (
+                  <option key={usuario.id} value={usuario.id}>
+                    {usuario.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block font-medium mb-1">Firmado por</label>
+              <input
+                type="text"
+                name="firmado_por"
+                value={formDataValues.firmado_por}
+                onChange={handleInputChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+
+            <div>
+              <label className="block font-medium mb-1">Autorizado por</label>
+              <input
+                type="text"
+                name="autorizado_por"
+                value={formDataValues.autorizado_por}
+                onChange={handleInputChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+
+            <div className="flex items-center mt-4 col-span-full">
+              <input
+                type="checkbox"
+                name="es_ultima"
+                checked={formDataValues.es_ultima}
+                onChange={handleInputChange}
+                className="mr-2"
+              />
+              <label className="font-medium">¿Es la última versión?</label>
+            </div>
           </div>
 
-          <div>
-            <label className="block font-medium mb-1">Archivo</label>
-            <input
-              type="file"
-              name="archivo_path"
-              accept=".pdf,.xlsx,.pptx,.docx"
-              onChange={handleInputChange}
-              required
-              className="w-full"
-            />
-          </div>
-
-          <div>
-            <label className="block font-medium mb-1">Tipo de archivo</label>
-            <select
-              name="tipo_archivo"
-              value={formDataValues.tipo_archivo}
-              onChange={handleInputChange}
-              className="w-full border rounded px-3 py-2"
+          <div className="pt-6 text-right">
+            <button
+              type="submit"
+              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md shadow"
             >
-              <option value="PDF">PDF</option>
-              <option value="XLSX">XLSX</option>
-              <option value="PPTX">PPTX</option>
-              <option value="DOCX">DOCX</option>
-            </select>
+              Subir versión
+            </button>
           </div>
-
-          <div>
-            <label className="block font-medium mb-1">Usuario editor</label>
-            <select
-              name="usuario_editor"
-              value={formDataValues.usuario_editor}
-              onChange={handleInputChange}
-              className="w-full border rounded px-3 py-2"
-            >
-              <option value="">Selecciona un usuario</option>
-              {usuarios.map((usuario) => (
-                <option key={usuario.id} value={usuario.id}>
-                  {usuario.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block font-medium mb-1">Firmado por</label>
-            <input
-              type="text"
-              name="firmado_por"
-              value={formDataValues.firmado_por}
-              onChange={handleInputChange}
-              className="w-full border rounded px-3 py-2"
-            />
-          </div>
-
-          <div>
-            <label className="block font-medium mb-1">Autorizado por</label>
-            <input
-              type="text"
-              name="autorizado_por"
-              value={formDataValues.autorizado_por}
-              onChange={handleInputChange}
-              className="w-full border rounded px-3 py-2"
-            />
-          </div>
-
-          <div className="flex items-center mt-4 col-span-full">
-            <input
-              type="checkbox"
-              name="es_ultima"
-              checked={formDataValues.es_ultima}
-              onChange={handleInputChange}
-              className="mr-2"
-            />
-            <label className="font-medium">¿Es la última versión?</label>
-          </div>
-        </div>
-
-        <div className="pt-6 text-right">
-          <button
-            type="submit"
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md shadow"
-          >
-            Subir versión
-          </button>
-        </div>
-      </form>
-
+        </form>
+      </div>
     </Layout>
   );
 }
