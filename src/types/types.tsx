@@ -59,3 +59,27 @@ export type AsignacionProps = {
   documento_titulo: string;
   fecha_asignacion: string;
 }
+
+export type Documento= {
+  id: number;
+  nombre_documento: string;
+  nombre_archivo: string;
+  version: string;
+  fecha_subida: string;
+}
+
+export type DocumentoFiltrado = {
+  id: number;
+  documento: number;
+  numero_version: number;
+  nombre_archivo: string;
+  archivo_path: string;
+  tipo_archivo: string;
+  tipo_categoria: string;
+  tipo_categoria_display: string;
+  fecha_carga: string;
+  firmado_por: string;
+  autorizado_por: string;
+  usuario_editor: number;
+  es_ultima: boolean;
+};

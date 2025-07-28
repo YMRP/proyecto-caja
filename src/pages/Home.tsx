@@ -4,15 +4,12 @@ import {
   FiShield,
   FiUsers,
   FiCreditCard,
-  FiCheckCircle,
   FiSettings,
   FiDatabase,
   FiTrendingUp,
   FiFileText,
   FiBarChart2,
-  FiUserCheck,
   FiPackage,
-  FiBox,
 } from "react-icons/fi";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -33,8 +30,8 @@ const AREAS: {
     Icon: FiShield,
   },
   { key: "recursos_humanos", label: "Recursos Humanos", Icon: FiUsers },
-  { key: "credito", label: "Crédito", Icon: FiCreditCard },
-  { key: "cobranza", label: "Cobranza", Icon: FiCheckCircle },
+  { key: "credito_cobranza", label: "Crédito y cobranza", Icon: FiCreditCard },
+  
   {
     key: "tecnologias_de_la_informacion",
     label: "Tecnologías de la Información",

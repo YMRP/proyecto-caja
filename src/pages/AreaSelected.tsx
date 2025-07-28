@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Layout from "./Layout";
 import {
   FiFileText,
@@ -25,7 +25,12 @@ const DOCUMENT_TYPES = [
 ];
 
 function AreaSelected() {
-  const { area } = useParams(); // para capturar el nombre del área desde la URL
+  const { area } = useParams();
+  const navigate = useNavigate();
+
+  const handleClick = (categoria: string) => {
+    navigate(`/area/${area}/${categoria}`);
+  };
 
   return (
     <Layout>
@@ -37,6 +42,7 @@ function AreaSelected() {
           {DOCUMENT_TYPES.map(({ key, label, Icon }) => (
             <button
               key={key}
+              onClick={() => handleClick(key)}
               className="group flex flex-col items-center justify-center bg-yellow-600 hover:bg-yellow-700 text-white rounded-xl p-8 shadow-lg transition duration-300"
             >
               <Icon size={48} className="mb-4 group-hover:scale-110 transition-transform duration-300" />

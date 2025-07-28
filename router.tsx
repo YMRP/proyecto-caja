@@ -14,6 +14,7 @@ import NewPassword from "./src/pages/NewPassword";
 import Asignation from "./src/pages/Asignation";
 import NewAsignation from "./src/components/NewAsignation";
 import AreaSelected from "./src/pages/AreaSelected";
+import AreaDocument from "./src/pages/AreaDocument";
 
 export function Router() {
   return (
@@ -29,12 +30,12 @@ export function Router() {
         <Route path="/documents/:id" element={<Document />} />
         <Route path="/createDocument" element={<CreateDocument />} />
         <Route path="/modDocument/:id" element={<ModDocument />} />
-        <Route path="/UploadDocument/:id" element = {<UploadDocument/>}/>
-        <Route path="/newPassword" element={<NewPassword/>}/>
-        <Route path="/asignations/:id" element={<Asignation/>}/>
-        <Route path="/newAsignation/:id" element={<NewAsignation/>}/>
+        <Route path="/UploadDocument/:id" element={<UploadDocument />} />
+        <Route path="/newPassword" element={<NewPassword />} />
+        <Route path="/asignations/:id" element={<Asignation />} />
+        <Route path="/newAsignation/:id" element={<NewAsignation />} />
         <Route path="/area/:area" element={<AreaSelected />} />
-
+        <Route path="/area/:area/:categoria" element={<AreaDocument />} />
       </Routes>
     </BrowserRouter>
   );
