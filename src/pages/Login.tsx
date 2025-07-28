@@ -100,7 +100,7 @@ function Login() {
       toast.dismiss(loadingToast);
 
       toast.error(
-        <div style={{ fontSize: "1.5rem", color: "green" }}>
+        <div style={{  color: "red" }}>
           {"no se pudo conectar con el servidor"}
         </div>,
         { position: "top-right" }

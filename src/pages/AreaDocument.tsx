@@ -40,7 +40,7 @@ function AreaDocument() {
 
   return (
     <Layout>
-      <div className="my-10 flex flex-col gap-6">
+      <div className="my-10 flex flex-col gap-6 mx-10">
         <h1 className="text-3xl text-center">
           Documentos de {categoria?.replace(/_/g, " ")} en el área{" "}
           {area?.replace(/_/g, " ")}
