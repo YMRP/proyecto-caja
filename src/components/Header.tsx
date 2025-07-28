@@ -102,7 +102,7 @@ function Header() {
         <div className="flex items-center">
           <a href="/home">
             <img
-              src="images/logo.jpg"
+              src="/images/logo.jpg"
               alt="Logo"
               className="h-12 w-auto sm:h-16"
             />

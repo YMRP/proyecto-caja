@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+
 import { toast } from "sonner";
 import HeaderPages from "../components/HeaderPages";
-
+import Layout from "./Layout";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 
 function Document() {
@@ -46,6 +45,7 @@ function Document() {
             Authorization: `Bearer ${accessToken}`,
           },
         });
+        console.log(response.data)
         const docFiltrado = response.data.find(
           (doc: any) => doc.id === Number(id)
         );
@@ -78,8 +78,7 @@ function Document() {
   }
 
   return (
-    <div>
-      <Header />
+    <Layout>
       <div className="max-w-7xl mx-auto p-4 flex flex-col items-center my-10 gap-6">
         <HeaderPages text={documento.titulo} />
 
@@ -170,12 +169,12 @@ function Document() {
             {[
               ["Referencia", documento.referencia],
               ["Proceso Operativo", documento.proceso_operativo],
-              ["Categoría", documento.categoria],
+              ["Categoría", documento.categoria_display],
               [
                 "Área Operativa",
                 documento.area_operativa == null
                   ? documento.area_operativa_otro
-                  : documento.area_operativa || "No especificado",
+                  : documento.area_operativa_display || "No especificado",
               ],
               [
                 "Funcionarios que aplican",
@@ -221,8 +220,7 @@ function Document() {
           </tbody>
         </table>
       </div>
-      <Footer />
-    </div>
+    </Layout>
   );
 }
 
