@@ -10,7 +10,7 @@ import { TiTrash } from "react-icons/ti";
 import { toast } from "sonner";
 import Layout from "./Layout";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
-
+// NOTA: ultima version se cambio por "subir documento"
 function Documents() {
   const [documentos, setDocumentos] = useState<any[]>([]);
   const [mensajeHover, setMensajeHover] = useState<string | null>(null);
@@ -112,7 +112,7 @@ function Documents() {
         <thead className="bg-gray-100 text-gray-800">
           <tr>
             <th className="text-left py-3 px-4 border-b border-gray-300">Título</th>
-            <th className="text-left py-3 px-4 border-b border-gray-300">Última Versión</th>
+            <th className="text-left py-3 px-4 border-b border-gray-300">Subir Documento</th>
             <th className="text-left py-3 px-4 border-b border-gray-300">Acción</th>
           </tr>
         </thead>
