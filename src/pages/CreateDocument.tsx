@@ -10,6 +10,36 @@ import Layout from "./Layout";
 function CreateDocument() {
   const [archivo, setArchivo] = useState<File | null>(null);
   const accessToken = localStorage.getItem("access");
+const [formKey, setFormKey] = useState(0);
+
+  const resetFormulario = () => {
+  setFormDataValues({
+    titulo: "",
+    referencia: "",
+    descripcion: "",
+    categoria: "interno",
+    fecha_ultima_revision: "",
+    fecha_ultima_actualizacion: "",
+    fecha_aprobacion_ca: "",
+    fecha_revocacion: "",
+    organo_ejecutivo_aprobador: "Consejo De Administración",
+    numero_sesion_aprobacion: "",
+    area_operativa: "",
+    area_operativa_otro: "",
+    funcionarios_aplican: "",
+    funcionarios_aplican_otro: "",
+    proceso_operativo: "",
+    numero_sesion_ultima_act: "",
+    numero_acuerdo: "",
+    usuario_creador: "",
+    version_actual: "",
+    firmado_por: "",
+    autorizado_por: "",
+    funcionarios_aplican_display: "",
+  });
+  setArchivo(null);
+  setFormKey((prev) => prev + 1); // 👈 Forzar reinicio del formulario
+};
 
   const [formDataValues, setFormDataValues] = useState({
     titulo: "",
@@ -33,6 +63,7 @@ function CreateDocument() {
     version_actual: "",
     firmado_por: "",
     autorizado_por: "",
+    funcionarios_aplican_display: "",
   });
 
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
@@ -80,7 +111,7 @@ function CreateDocument() {
     }
 
     const loadingToast = toast.loading(
-      <div style={{ fontSize: "1.5rem", color: "black" }}>Cargando...</div>,
+      <div style={{ color: "black" }}>Cargando...</div>,
       {
         position: "top-right",
       }
@@ -96,20 +127,16 @@ function CreateDocument() {
           },
         }
       );
-
+      resetFormulario(); 
       console.log("Documento creado:", response.data);
       toast.success(
-        <div style={{ fontSize: "1.5rem", color: "green" }}>
-          {response.data.mensaje}
-        </div>,
+        <div style={{ color: "green" }}>{response.data.mensaje}</div>,
         { position: "top-right" }
       );
     } catch (error: any) {
       console.error("Error al crear el documento:", error);
       toast.error(
-        <div style={{ fontSize: "1.5rem", color: "red" }}>
-          {"Error al crear el documento"}
-        </div>,
+        <div style={{ color: "red" }}>{"Error al crear el documento"}</div>,
         { position: "top-right" }
       );
     } finally {
@@ -120,9 +147,10 @@ function CreateDocument() {
   return (
     <Layout>
       <div className="max-w-7xl mx-auto p-6 flex flex-col my-10 gap-6">
-        <HeaderPages text="Crear Documento" />
+        <HeaderPages text="Crear Carpeta" />
 
-        <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <form onSubmit={handleSubmit} encType="multipart/form-data"   key={formKey}
+>
           <table className="w-full table-auto border border-gray-300 shadow-md mb-6">
             <tbody>
               {[
@@ -259,8 +287,8 @@ function CreateDocument() {
                         Seguridad de la Información
                       </option>
                       <option value="recursos_humanos">Recursos Humanos</option>
-                      <option value="credito">Crédito</option>
-                      <option value="cobranza">Cobranza</option>
+                      <option value="credito">Crédito y Cobranza</option>
+
                       <option value="tecnologias_de_la_informacion">
                         Tecnologías de la Información
                       </option>
@@ -294,10 +322,96 @@ function CreateDocument() {
                       className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Selecciona un funcionario</option>
-                      {/* Opciones cortadas para brevedad; agregar todas igual que en tu código */}
                       <option value="gerente_general">Gerente General</option>
                       <option value="subgerente">Subgerente</option>
-                      {/* ...otras opciones... */}
+                      <option value="jefe_de_proyectos_especiales">
+                        Jefe de Proyectos Especiales
+                      </option>
+                      <option value="controloria">Controlaría</option>
+                      <option value="administracion_de_riegos">
+                        Administración de Riesgos
+                      </option>
+                      <option value="auditor_interno">Auditor Interno</option>
+                      <option value="auxiliar_de_auditor_interno">
+                        Auxiliar de Auditor Interno
+                      </option>
+                      <option value="oficial_de_seguridad_de_la_informacion">
+                        Oficial de Seguridad de la Información
+                      </option>
+                      <option value="jefe_de_desarrollo_humano">
+                        Jefe de Desarrollo Humano
+                      </option>
+                      <option value="capacitador">Capacitador</option>
+                      <option value="jefe_de_credito">Jefe de Crédito</option>
+                      <option value="supervisor_de_credito">
+                        Supervisor de Crédito
+                      </option>
+                      <option value="controlaria_de_credito">
+                        Controlaría de Crédito
+                      </option>
+                      <option value="analista_de_credito">
+                        Analista de Crédito
+                      </option>
+                      <option value="supervisor_de_uens">
+                        Supervisor de UENS
+                      </option>
+                      <option value="encargado_de_uens">
+                        Encargado de UENS
+                      </option>
+                      <option value="jefe_de_cobranza">Jefe de Cobranza</option>
+                      <option value="supervisor_de_cobranza">
+                        Supervisor de Cobranza
+                      </option>
+                      <option value="asesores_de_cobranza">
+                        Asesores de Cobranza
+                      </option>
+                      <option value="jefe_de_captacion">
+                        Jefe de Captación
+                      </option>
+                      <option value="auxiliar_de_captacion">
+                        Auxiliar de Captación
+                      </option>
+                      <option value="jefe_de_sistemas">Jefe de Sistemas</option>
+                      <option value="auxiliar_de_sistemas">
+                        Auxiliar de Sistemas
+                      </option>
+                      <option value="jefe_de_tesoreria">
+                        Jefe de Tesorería
+                      </option>
+                      <option value="jefe_de_ contabilidad">
+                        Jefe de Contabilidad
+                      </option>
+                      <option value="auxiliar de contabilidad">
+                        Auxiliar de Contabilidad
+                      </option>
+                      <option value="oficial de cumplimiento">
+                        Oficial de Cumplimiento
+                      </option>
+                      <option value="auxiliar de oficial de cumplimiento">
+                        Auxiliar de Oficial de Cumplimiento
+                      </option>
+                      <option value="jefe de mercadotecnia">
+                        Jefe de Mercadotecnia
+                      </option>
+                      <option value="auxiliar de mercadotecnia">
+                        Auxiliar de Mercadotecnia
+                      </option>
+                      <option value="asesores de servicios multiples">
+                        Asesores de Servicios Múltiples
+                      </option>
+                      <option value="auxiliares de servicios multiples">
+                        Auxiliares de Servicios Múltiples
+                      </option>
+                      <option value="cajeros">Cajeros</option>
+                      <option value="volantes generales">
+                        Volantes Generales
+                      </option>
+                      <option value="encargado de archivo">
+                        Encargado de Archivo
+                      </option>
+                      <option value="auxiliar de archivo">
+                        Auxiliar de Archivo
+                      </option>
                     </select>
                   ),
                 },
@@ -408,9 +522,7 @@ function CreateDocument() {
             </tbody>
           </table>
 
-          
-
-          <Button text='Crear documento' type="submit" />
+          <Button text="Crear carpeta" type="submit" />
         </form>
       </div>
     </Layout>

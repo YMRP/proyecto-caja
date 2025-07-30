@@ -178,7 +178,7 @@ function Document() {
               ],
               [
                 "Funcionarios que aplican",
-                documento.funcionarios_aplican_display == null
+                documento.funcionarios_aplican_display === null
                   ? documento.funcionarios_aplican_otro
                   : documento.funcionarios_aplican_display || "No especificado",
               ],

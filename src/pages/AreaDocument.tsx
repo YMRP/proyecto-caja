@@ -63,11 +63,9 @@ function AreaDocument() {
                 <p>
                   <strong>Versión:</strong> {doc.numero_version}
                 </p>
+
                 <p>
-                  <strong>Categoría:</strong> {doc.tipo_categoria_display}
-                </p>
-                <p>
-                  <strong>Subido por:</strong> {doc.firmado_por}
+                  <strong>Firmado por:</strong> {doc.firmado_por}
                 </p>
                 <p>
                   <strong>Autorizado por:</strong> {doc.autorizado_por}

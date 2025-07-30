@@ -135,7 +135,7 @@ function UploadDocument() {
         },
       });
       toast.success(
-        <div style={{ color: "green" }}>{"Versión subida con éxito"}</div>,
+        <div style={{ color: "green" }}>{"Archivo subido con éxito"}</div>,
         { position: "top-right" }
       );
 
@@ -167,14 +167,14 @@ function UploadDocument() {
   return (
     <Layout>
       <div className="my-10 flex flex-col gap-6">
-        <HeaderPages text="Subir nueva versión de documento" />
+        <HeaderPages text="Subir nuevo archivo para manual" />
         <form
           onSubmit={handleSubmit}
           encType="multipart/form-data"
           className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md"
         >
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-            Nueva versión: {nombreDocumento}
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+            {nombreDocumento}
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -316,7 +316,7 @@ function UploadDocument() {
               type="submit"
               className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md shadow"
             >
-              Subir versión
+              Subir archivo
             </button>
           </div>
         </form>
