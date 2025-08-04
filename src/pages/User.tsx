@@ -17,7 +17,6 @@ function User() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const accessToken = localStorage.getItem("access");
-  //AGREGAR CAMPO DE MODIFICAR: BLOQUEADO, CONTRASEÑA
   const [password, setPassword] = useState<string>("");
   const [temporalPass, setTemporalPass] = useState<boolean>(false);
   useEffect(() => {
@@ -33,8 +32,7 @@ function User() {
         });
         setUsuario(response.data);
         setError(null);
-        console.log(response.data);
-        console.log("logs_sesion", response.data.logs_sesion);
+
       } catch (err: any) {
         console.error("Error al obtener usuario:", err.message);
         setError("No se pudo cargar la información del usuario.");
@@ -56,26 +54,24 @@ function User() {
   }
   if (loading)
     return (
-      <>
-        <Header />
+      <Layout>
+        
         <div className="contenedorPerfil">Cargando datos del usuario...</div>
-      </>
+      </Layout>
     );
 
   if (error)
     return (
-      <>
-        <Header />
+      <Layout>
         <div className="contenedorPerfil error">{error}</div>
-      </>
+      </Layout>
     );
 
   if (!usuario)
     return (
-      <>
-        <Header />
+      <Layout>
         <div className="contenedorPerfil">Usuario no encontrado.</div>
-      </>
+      </Layout>
     );
 
   const ultimoLog =

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-
 import { toast } from "sonner";
+import { FaTrash } from "react-icons/fa";
+
 import HeaderPages from "../components/HeaderPages";
 import Layout from "./Layout";
+
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 
 function Document() {
@@ -14,7 +16,9 @@ function Document() {
   const [filtroCategoria, setFiltroCategoria] = useState<string>("");
   const accessToken = localStorage.getItem("access");
 
-  // Opciones con valor interno y etiqueta legible
+  // Obtener datos del usuario actual desde localStorage
+  const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
+
   const opcionesCategorias = [
     { value: "", label: "Todas" },
     { value: "anexo", label: "Anexo" },
@@ -37,24 +41,23 @@ function Document() {
     }
   }, []);
 
-  useEffect(() => {
-    async function fetchDocument() {
-      try {
-        const response = await axios.get(`${apiUrl}documentos-visibles/`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        console.log(response.data)
-        const docFiltrado = response.data.find(
-          (doc: any) => doc.id === Number(id)
-        );
-        setDocumento(docFiltrado);
-      } catch (error) {
-        console.error("Error al obtener documento:", error);
-      }
+  const fetchDocument = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}documentos-visibles/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const docFiltrado = response.data.find(
+        (doc: any) => doc.id === Number(id)
+      );
+      setDocumento(docFiltrado);
+    } catch (error) {
+      console.error("Error al obtener documento:", error);
     }
+  };
 
+  useEffect(() => {
     fetchDocument();
   }, [id]);
 
@@ -66,9 +69,27 @@ function Document() {
         },
       });
       toast.success("Versión liberada correctamente");
-      window.location.reload();
+      fetchDocument();
     } catch (err) {
       toast.error("Error al liberar versión");
+      console.error(err);
+    }
+  };
+
+  const eliminarVersion = async (versionId: number) => {
+    const confirmar = window.confirm("¿Estás seguro de eliminar esta versión?");
+    if (!confirmar) return;
+
+    try {
+      await axios.delete(`${apiUrl}api/versiones/${versionId}/eliminar/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      toast.success("Versión eliminada correctamente");
+      fetchDocument();
+    } catch (err) {
+      toast.error("Error al eliminar la versión");
       console.error(err);
     }
   };
@@ -84,22 +105,20 @@ function Document() {
 
         {/* Filtro de categoría */}
         {documento.versiones.length > 0 && (
-          <div className="w-full flex justify-end items-center gap-2 mb-4">
-            <label htmlFor="filtroCategoria" className="text-sm font-medium">
-              Filtrar por categoría:
-            </label>
-            <select
-              id="filtroCategoria"
-              value={filtroCategoria}
-              onChange={(e) => setFiltroCategoria(e.target.value)}
-              className="border border-gray-300 rounded px-3 py-1 text-sm"
-            >
-              {opcionesCategorias.map(({ value, label }) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
+          <div className="w-full flex flex-wrap gap-2 justify-center mb-4">
+            {opcionesCategorias.map(({ value, label }) => (
+              <button
+                key={value}
+                onClick={() => setFiltroCategoria(value)}
+                className={`px-4 py-2 rounded font-medium text-sm border ${
+                  filtroCategoria === value
+                    ? "bg-green-600 text-white"
+                    : "bg-white text-green-600 hover:bg-green-50 hover:cursor-pointer"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         )}
 
@@ -115,6 +134,7 @@ function Document() {
               <th className="py-2 px-4 border border-gray-300 text-left">Firmado / Autorizado</th>
               <th className="py-2 px-4 border border-gray-300 text-left">Archivo</th>
               <th className="py-2 px-4 border border-gray-300 text-left">Liberado</th>
+              <th className="py-2 px-4 border border-gray-300 text-center">Eliminar</th>
             </tr>
           </thead>
           <tbody>
@@ -158,6 +178,17 @@ function Document() {
                       "No"
                     )}
                   </td>
+                  <td className="py-2 px-4 border border-gray-300 text-center">
+                    {!v.liberada && usuario.rol === "administrador" && (
+                      <button
+                        onClick={() => eliminarVersion(v.id)}
+                        className="text-red-600 hover:text-red-800"
+                        title="Eliminar versión"
+                      >
+                        <FaTrash />
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
           </tbody>
@@ -166,51 +197,35 @@ function Document() {
         {/* Tabla de metadatos del documento */}
         <table className="w-full table-auto border border-gray-300 shadow-md mb-8">
           <tbody>
-            {[
-              ["Referencia", documento.referencia],
+            {[["Referencia", documento.referencia],
               ["Proceso Operativo", documento.proceso_operativo],
               ["Categoría", documento.categoria_display],
-              [
-                "Área Operativa",
+              ["Área Operativa",
                 documento.area_operativa == null
                   ? documento.area_operativa_otro
-                  : documento.area_operativa_display || "No especificado",
-              ],
-              [
-                "Funcionarios que aplican",
+                  : documento.area_operativa_display || "No especificado"],
+              ["Funcionarios que aplican",
                 documento.funcionarios_aplican_display === null
                   ? documento.funcionarios_aplican_otro
-                  : documento.funcionarios_aplican_display || "No especificado",
-              ],
+                  : documento.funcionarios_aplican_display || "No especificado"],
               ["Autorizado por", documento.autorizado_por],
               ["Firmado por", documento.firmado_por],
               ["Órgano Aprobador", documento.organo_ejecutivo_aprobador],
               ["Versión actual", documento.version_actual],
               ["Fecha Aprobación", documento.fecha_aprobacion_ca],
-              [
-                "Fecha Revocación",
+              ["Fecha Revocación",
                 documento.fecha_revocacion === null
                   ? "Sin fecha de revocación"
-                  : documento.fecha_revocacion,
-              ],
+                  : documento.fecha_revocacion],
               ["Última Revisión", documento.fecha_ultima_revision],
               ["Última Actualización", documento.fecha_ultima_actualizacion],
               ["Descripción", documento.descripcion],
               ["Número de Acuerdo", documento.numero_acuerdo],
-              [
-                "Número de Sesión Aprobación",
-                documento.numero_sesion_aprobacion,
-              ],
-              [
-                "Número de Sesión Ultima Acta",
-                documento.numero_sesion_ultima_act,
-              ],
+              ["Número de Sesión Aprobación", documento.numero_sesion_aprobacion],
+              ["Número de Sesión Última Acta", documento.numero_sesion_ultima_act],
               ["Usuario Creador", documento.nombre_usuario_creador],
             ].map(([label, value], idx) => (
-              <tr
-                key={idx}
-                className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
-              >
+              <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                 <td className="py-2 px-4 font-semibold border border-gray-300 w-1/3">
                   {label}
                 </td>

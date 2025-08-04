@@ -85,7 +85,7 @@ function Header() {
   const cerrarSesion = async () => {
     accessWithoutToken();
     try {
-      await api.post("api/cerrar-sesion/");
+      await api.post("/api/cerrar-sesion/");
       localStorage.clear();
       window.location.href = "/";
     } catch (error) {
