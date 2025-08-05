@@ -5,6 +5,8 @@ import HeaderPages from "../components/HeaderPages";
 import { toast } from "sonner";
 import type {AsignacionProps} from '../types/types'
 import Layout from "./Layout";
+import { FaCheckCircle } from "react-icons/fa";
+
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 
 
@@ -68,7 +70,7 @@ function Asignation() {
         }
       );
       toast.success(
-        <div style={{ fontSize: "1.5rem", color: "green" }}>
+        <div style={{ color: "green" }}>
           {"Version marcada como revisada"}
         </div>,
         { position: "top-right" }
@@ -108,7 +110,7 @@ function Asignation() {
       <div className="max-w-6xl mx-auto">
         <button
           onClick={handleCrearAsignacion}
-          className="mb-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300"
+          className="mb-6 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300"
         >
           Crear asignación
         </button>
@@ -125,6 +127,7 @@ function Asignation() {
                   <th className="py-3 px-4 text-left">Fecha Asignación</th>
                   <th className="py-3 px-4 text-left">Revisado</th>
                   <th className="py-3 px-4 text-left">Fecha Revisión</th>
+                  <th className="py-3 px-4 text-left">Observaciones</th>
                   <th className="py-3 px-4 text-left">Acción</th>
                 </tr>
               </thead>
@@ -149,6 +152,8 @@ function Asignation() {
                         ? new Date(a.fecha_revision).toLocaleString()
                         : "-"}
                     </td>
+                    <td className="py-3 px-4">{a.observaciones || "-"}</td>
+
                     <td className="py-3 px-4">
                       {!a.revisado ? (
                         a.tipo_asignacion === "control" ? (
@@ -167,7 +172,7 @@ function Asignation() {
                           </button>
                         )
                       ) : (
-                        <span className="text-green-700 text-lg font-bold">✔</span>
+                        <span className="text-green-700 text-lg font-bold flex flex-col items-center"><FaCheckCircle/></span>
                       )}
                     </td>
                   </tr>

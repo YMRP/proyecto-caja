@@ -58,6 +58,7 @@ export type AsignacionProps = {
   fecha_revision: string | null;
   documento_titulo: string;
   fecha_asignacion: string;
+  observaciones?: string
 }
 
 export type Documento= {

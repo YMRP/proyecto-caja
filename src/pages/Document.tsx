@@ -89,7 +89,7 @@ function Document() {
       toast.success("Versión eliminada correctamente");
       fetchDocument();
     } catch (err) {
-      toast.error("Error al eliminar la versión");
+      toast.error("Error: No eres el propietario de esta carpeta",{position: "top-right"});
       console.error(err);
     }
   };
