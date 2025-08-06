@@ -15,6 +15,9 @@ function Document() {
   const [usuarioActualId, setUsuarioActualId] = useState<number | null>(null);
   const [filtroCategoria, setFiltroCategoria] = useState<string>("");
   const accessToken = localStorage.getItem("access");
+  const [asignacionesLiberadas, setAsignacionesLiberadas] = useState<number[]>(
+    []
+  );
 
   // Obtener datos del usuario actual desde localStorage
   const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
@@ -48,6 +51,7 @@ function Document() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      console.log(response.data);
       const docFiltrado = response.data.find(
         (doc: any) => doc.id === Number(id)
       );
@@ -57,8 +61,28 @@ function Document() {
     }
   };
 
+  const fetchAsignaciones = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}api/mis-asignaciones/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Filtrar solo asignaciones liberadas
+      const liberadas = res.data
+        .filter((asig: any) => asig.liberado === true)
+        .map((asig: any) => asig.version);
+
+      setAsignacionesLiberadas(liberadas);
+    } catch (error) {
+      console.error("Error al obtener asignaciones liberadas:", error);
+    }
+  };
+
   useEffect(() => {
     fetchDocument();
+    fetchAsignaciones();
   }, [id]);
 
   const liberarVersion = async (versionId: number) => {
@@ -68,7 +92,10 @@ function Document() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      toast.success("Versión liberada correctamente");
+      toast.success("Versión liberada correctamente", {
+        position: "top-right",
+      });
+
       fetchDocument();
     } catch (err) {
       toast.error("Error al liberar versión");
@@ -89,7 +116,9 @@ function Document() {
       toast.success("Versión eliminada correctamente");
       fetchDocument();
     } catch (err) {
-      toast.error("Error: No eres el propietario de esta carpeta",{position: "top-right"});
+      toast.error("Error: No eres el propietario de esta carpeta", {
+        position: "top-right",
+      });
       console.error(err);
     }
   };
@@ -127,14 +156,30 @@ function Document() {
           <thead className="bg-gray-100 text-gray-800">
             <tr>
               <th className="py-2 px-4 border border-gray-300 text-left">#</th>
-              <th className="py-2 px-4 border border-gray-300 text-left">Nombre Archivo</th>
-              <th className="py-2 px-4 border border-gray-300 text-left">Tipo Categoría</th>
-              <th className="py-2 px-4 border border-gray-300 text-left">Versión</th>
-              <th className="py-2 px-4 border border-gray-300 text-left">Fecha de Carga</th>
-              <th className="py-2 px-4 border border-gray-300 text-left">Firmado / Autorizado</th>
-              <th className="py-2 px-4 border border-gray-300 text-left">Archivo</th>
-              <th className="py-2 px-4 border border-gray-300 text-left">Liberado</th>
-              <th className="py-2 px-4 border border-gray-300 text-center">Eliminar</th>
+              <th className="py-2 px-4 border border-gray-300 text-left">
+                Nombre Archivo
+              </th>
+              <th className="py-2 px-4 border border-gray-300 text-left">
+                Tipo Categoría
+              </th>
+              <th className="py-2 px-4 border border-gray-300 text-left">
+                Versión
+              </th>
+              <th className="py-2 px-4 border border-gray-300 text-left">
+                Fecha de Carga
+              </th>
+              <th className="py-2 px-4 border border-gray-300 text-left">
+                Firmado / Autorizado
+              </th>
+              <th className="py-2 px-4 border border-gray-300 text-left">
+                Archivo
+              </th>
+              <th className="py-2 px-4 border border-gray-300 text-left">
+                Liberado
+              </th>
+              <th className="py-2 px-4 border border-gray-300 text-center">
+                Eliminar
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -148,24 +193,43 @@ function Document() {
                   key={v.id}
                   className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
                 >
-                  <td className="py-2 px-4 border border-gray-300">{idx + 1}</td>
-                  <td className="py-2 px-4 border border-gray-300">{v.nombre_archivo || "Sin nombre"}</td>
-                  <td className="py-2 px-4 border border-gray-300">{v.tipo_categoria_display || "No especificado"}</td>
-                  <td className="py-2 px-4 border border-gray-300">{v.numero_version}</td>
-                  <td className="py-2 px-4 border border-gray-300">{v.fecha_carga?.slice(0, 10)}</td>
-                  <td className="py-2 px-4 border border-gray-300">{v.firmado_por} / {v.autorizado_por}</td>
                   <td className="py-2 px-4 border border-gray-300">
-                    <a
-                      href={v.archivo_path}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline"
-                    >
-                      Ver archivo ({v.tipo_archivo})
-                    </a>
+                    {idx + 1}
                   </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    {v.nombre_archivo || "Sin nombre"}
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    {v.tipo_categoria_display || "No especificado"}
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    {v.numero_version}
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    {v.fecha_carga?.slice(0, 10)}
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    {v.firmado_por} / {v.autorizado_por}
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    {asignacionesLiberadas.includes(v.id) ? (
+                      <a
+                        href={v.archivo_path}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        Ver archivo ({v.tipo_archivo})
+                      </a>
+                    ) : (
+                      <span className="text-gray-400 italic">
+                        Pendiente por liberar
+                      </span>
+                    )}
+                  </td>
+
                   <td className="py-2 px-4 border border-gray-300 text-center">
-                    {v.liberada ? (
+                    {asignacionesLiberadas.includes(v.id) ? (
                       "Sí"
                     ) : v.usuario_asignado === usuarioActualId ? (
                       <button
@@ -178,6 +242,7 @@ function Document() {
                       "No"
                     )}
                   </td>
+
                   <td className="py-2 px-4 border border-gray-300 text-center">
                     {!v.liberada && usuario.rol === "administrador" && (
                       <button
@@ -197,35 +262,51 @@ function Document() {
         {/* Tabla de metadatos del documento */}
         <table className="w-full table-auto border border-gray-300 shadow-md mb-8">
           <tbody>
-            {[["Referencia", documento.referencia],
+            {[
+              ["Referencia", documento.referencia],
               ["Proceso Operativo", documento.proceso_operativo],
               ["Categoría", documento.categoria_display],
-              ["Área Operativa",
+              [
+                "Área Operativa",
                 documento.area_operativa == null
                   ? documento.area_operativa_otro
-                  : documento.area_operativa_display || "No especificado"],
-              ["Funcionarios que aplican",
+                  : documento.area_operativa_display || "No especificado",
+              ],
+              [
+                "Funcionarios que aplican",
                 documento.funcionarios_aplican_display === null
                   ? documento.funcionarios_aplican_otro
-                  : documento.funcionarios_aplican_display || "No especificado"],
+                  : documento.funcionarios_aplican_display || "No especificado",
+              ],
               ["Autorizado por", documento.autorizado_por],
               ["Firmado por", documento.firmado_por],
               ["Órgano Aprobador", documento.organo_ejecutivo_aprobador],
               ["Versión actual", documento.version_actual],
               ["Fecha Aprobación", documento.fecha_aprobacion_ca],
-              ["Fecha Revocación",
+              [
+                "Fecha Revocación",
                 documento.fecha_revocacion === null
                   ? "Sin fecha de revocación"
-                  : documento.fecha_revocacion],
+                  : documento.fecha_revocacion,
+              ],
               ["Última Revisión", documento.fecha_ultima_revision],
               ["Última Actualización", documento.fecha_ultima_actualizacion],
               ["Descripción", documento.descripcion],
               ["Número de Acuerdo", documento.numero_acuerdo],
-              ["Número de Sesión Aprobación", documento.numero_sesion_aprobacion],
-              ["Número de Sesión Última Acta", documento.numero_sesion_ultima_act],
+              [
+                "Número de Sesión Aprobación",
+                documento.numero_sesion_aprobacion,
+              ],
+              [
+                "Número de Sesión Última Acta",
+                documento.numero_sesion_ultima_act,
+              ],
               ["Usuario Creador", documento.nombre_usuario_creador],
             ].map(([label, value], idx) => (
-              <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+              <tr
+                key={idx}
+                className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+              >
                 <td className="py-2 px-4 font-semibold border border-gray-300 w-1/3">
                   {label}
                 </td>

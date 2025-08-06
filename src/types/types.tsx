@@ -59,6 +59,8 @@ export type AsignacionProps = {
   documento_titulo: string;
   fecha_asignacion: string;
   observaciones?: string
+  liberado?: boolean
+  archivo_path: string
 }
 
 export type Documento= {

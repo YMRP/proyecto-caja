@@ -3,13 +3,12 @@ import { useNavigate } from "react-router-dom"; // <-- IMPORT
 import axios from "axios";
 import HeaderPages from "../components/HeaderPages";
 import { toast } from "sonner";
-import type {AsignacionProps} from '../types/types'
+import type { AsignacionProps } from "../types/types";
 import Layout from "./Layout";
 import { FaCheckCircle } from "react-icons/fa";
+import { MdPreview } from "react-icons/md";
 
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
-
-
 
 function Asignation() {
   const [asignaciones, setAsignaciones] = useState<AsignacionProps[]>([]);
@@ -23,7 +22,7 @@ function Asignation() {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setAsignaciones(res.data);
-        console.log(res.data)
+        console.log("PARA ASIGNACIONES: ",res.data);
       } catch (error) {
         console.error("Error al obtener asignaciones:", error);
         toast.error(
@@ -36,8 +35,6 @@ function Asignation() {
     };
     fetchAsignaciones();
   }, []);
-
-  
 
   const handleLiberar = async (id: number) => {
     try {
@@ -70,9 +67,7 @@ function Asignation() {
         }
       );
       toast.success(
-        <div style={{ color: "green" }}>
-          {"Version marcada como revisada"}
-        </div>,
+        <div style={{ color: "green" }}>{"Version marcada como revisada"}</div>,
         { position: "top-right" }
       );
       setAsignaciones((prev) =>
@@ -103,63 +98,69 @@ function Asignation() {
   // ... aquí sigue tu código handleLiberar y handleMarcarRevisado
 
   return (
-  <Layout>
-    <div className="pt-20 px-4 min-h-screen bg-gray-50">
-          <HeaderPages text="Asignaciones" />
+    <Layout>
+      <div className="pt-20 px-4 min-h-screen bg-gray-50">
+        <HeaderPages text="Asignaciones" />
 
-      <div className="max-w-6xl mx-auto">
-        <button
-          onClick={handleCrearAsignacion}
-          className="mb-6 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300"
-        >
-          Crear asignación
-        </button>
+        <div className="max-w-6xl mx-auto">
+          <button
+            onClick={handleCrearAsignacion}
+            className="mb-6 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300"
+          >
+            Crear asignación
+          </button>
 
-        {asignaciones.length === 0 ? (
-          <p className="text-gray-700 text-lg">No tienes asignaciones pendientes.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm">
-              <thead className="bg-green-800 text-white text-sm uppercase">
-                <tr>
-                  <th className="py-3 px-4 text-left">Documento</th>
-                  <th className="py-3 px-4 text-left">Versión</th>
-                  <th className="py-3 px-4 text-left">Fecha Asignación</th>
-                  <th className="py-3 px-4 text-left">Revisado</th>
-                  <th className="py-3 px-4 text-left">Fecha Revisión</th>
-                  <th className="py-3 px-4 text-left">Observaciones</th>
-                  <th className="py-3 px-4 text-left">Acción</th>
-                </tr>
-              </thead>
-              <tbody>
-                {asignaciones.map((a) => (
-                  <tr
-                    key={a.id}
-                    className={`border-b border-gray-200 ${
-                      a.revisado ? "bg-green-100" : "bg-white"
-                    }`}
-                  >
-                    <td className="py-3 px-4">{a.documento_titulo}</td>
-                    <td className="py-3 px-4">{a.numero_version}</td>
-                    <td className="py-3 px-4">
-                      {a.fecha_asignacion
-                        ? new Date(a.fecha_asignacion).toLocaleString()
-                        : "-"}
-                    </td>
-                    <td className="py-3 px-4">{a.revisado ? "Sí" : "No"}</td>
-                    <td className="py-3 px-4">
-                      {a.fecha_revision
-                        ? new Date(a.fecha_revision).toLocaleString()
-                        : "-"}
-                    </td>
-                    <td className="py-3 px-4">{a.observaciones || "-"}</td>
-
-                    <td className="py-3 px-4">
-                      {!a.revisado ? (
-                        a.tipo_asignacion === "control" ? (
+          {asignaciones.length === 0 ? (
+            <p className="text-gray-700 text-lg">
+              No tienes asignaciones pendientes.
+            </p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm mb-20 text-center">
+                <thead className="bg-green-800 text-white text-sm uppercase">
+                  <tr>
+                    <th className="py-3 px-4 text-center">Documento</th>
+                    <th className="py-3 px-4 text-center">Versión</th>
+                    <th className="py-3 px-4 text-center">Fecha Asignación</th>
+                    <th className="py-3 px-4 text-center">Revisado</th>
+                    <th className="py-3 px-4 text-center">Fecha Revisión</th>
+                    <th className="py-3 px-4 text-center">Observaciones</th>
+                    <th className="py-3 px-4 text-center">Archivo</th>
+                    <th className="py-3 px-4 text-center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {asignaciones.map((a) => (
+                    <tr
+                      key={a.id}
+                      className={`border-b border-gray-200 ${
+                        a.revisado || a.liberado ? "bg-green-100" : "bg-white"
+                      }`}
+                    >
+                      <td className="py-3 px-4">{a.documento_titulo}</td>
+                      <td className="py-3 px-4">{a.numero_version}</td>
+                      <td className="py-3 px-4">
+                        {a.fecha_asignacion
+                          ? new Date(a.fecha_asignacion).toLocaleString()
+                          : "-"}
+                      </td>
+                      <td className="py-3 px-4">{a.revisado ? "Sí" : "No"}</td>
+                      <td className="py-3 px-4">
+                        {a.fecha_revision
+                          ? new Date(a.fecha_revision).toLocaleString()
+                          : "-"}
+                      </td>
+                      <td className="py-3 px-4">{a.observaciones || "-"}</td>
+                      <td className="py-3 px-4 "><a className="text-2xl text-blue-700 text-center flex justify-center items-center" href={a.archivo_path} target="_blank"> {<MdPreview/>}</a></td>
+                      <td className="py-3 px-4">
+                        {a.revisado || a.liberado ? (
+                          <span className="text-green-700 text-lg font-bold flex flex-col items-center">
+                            <FaCheckCircle />
+                          </span>
+                        ) : a.tipo_asignacion === "control" ? (
                           <button
                             onClick={() => handleLiberar(a.id)}
-                            className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-1 px-3 rounded transition duration-200"
+                            className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-1 px-3 rounded transition duration-200 w-full"
                           >
                             Liberar
                           </button>
@@ -170,22 +171,18 @@ function Asignation() {
                           >
                             Marcar revisado
                           </button>
-                        )
-                      ) : (
-                        <span className="text-green-700 text-lg font-bold flex flex-col items-center"><FaCheckCircle/></span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  </Layout>
-);
-
+    </Layout>
+  );
 }
 
 export default Asignation;
