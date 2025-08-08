@@ -15,9 +15,6 @@ function Document() {
   const [usuarioActualId, setUsuarioActualId] = useState<number | null>(null);
   const [filtroCategoria, setFiltroCategoria] = useState<string>("");
   const accessToken = localStorage.getItem("access");
-  const [asignacionesLiberadas, setAsignacionesLiberadas] = useState<number[]>(
-    []
-  );
 
   // Obtener datos del usuario actual desde localStorage
   const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
@@ -51,7 +48,7 @@ function Document() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log(response.data);
+      console.log("Documentos visibles: ", response.data);
       const docFiltrado = response.data.find(
         (doc: any) => doc.id === Number(id)
       );
@@ -61,28 +58,8 @@ function Document() {
     }
   };
 
-  const fetchAsignaciones = async () => {
-    try {
-      const res = await axios.get(`${apiUrl}api/mis-asignaciones/`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      // Filtrar solo asignaciones liberadas
-      const liberadas = res.data
-        .filter((asig: any) => asig.liberado === true)
-        .map((asig: any) => asig.version);
-
-      setAsignacionesLiberadas(liberadas);
-    } catch (error) {
-      console.error("Error al obtener asignaciones liberadas:", error);
-    }
-  };
-
   useEffect(() => {
     fetchDocument();
-    fetchAsignaciones();
   }, [id]);
 
   const liberarVersion = async (versionId: number) => {
@@ -212,7 +189,7 @@ function Document() {
                     {v.firmado_por} / {v.autorizado_por}
                   </td>
                   <td className="py-2 px-4 border border-gray-300">
-                    {asignacionesLiberadas.includes(v.id) ? (
+                    {v.liberada ? (
                       <a
                         href={v.archivo_path}
                         target="_blank"
@@ -229,7 +206,7 @@ function Document() {
                   </td>
 
                   <td className="py-2 px-4 border border-gray-300 text-center">
-                    {asignacionesLiberadas.includes(v.id) ? (
+                    {v.liberada ? (
                       "Sí"
                     ) : v.usuario_asignado === usuarioActualId ? (
                       <button
@@ -244,7 +221,7 @@ function Document() {
                   </td>
 
                   <td className="py-2 px-4 border border-gray-300 text-center">
-                    {!v.liberada && usuario.rol === "administrador" && (
+                    {usuario.rol === "administrador" && (
                       <button
                         onClick={() => eliminarVersion(v.id)}
                         className="text-red-600 hover:text-red-800"
