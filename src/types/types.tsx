@@ -85,4 +85,5 @@ export type DocumentoFiltrado = {
   autorizado_por: string;
   usuario_editor: number;
   es_ultima: boolean;
+  liberada: boolean
 };

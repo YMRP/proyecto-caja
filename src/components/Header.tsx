@@ -12,6 +12,9 @@ const apiUrl = import.meta.env.VITE_URL_BACKEND;
 function Header() {
   accessWithoutToken();
 
+  const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
+  const esOperativo = usuario.rol === "operativo";
+
   const [fotoPerfil, setFotoPerfil] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -114,17 +117,22 @@ function Header() {
           {/* Navegación desktop */}
           <nav className="hidden md:flex items-center gap-8 text-white font-semibold">
             <NavElement href="/home" value="INICIO" icon={<FaHome />} />
-            <NavElement href="/users" value="USUARIOS" icon={<FaUsers />} />
+            {!esOperativo && (
+              <NavElement href="/users" value="USUARIOS" icon={<FaUsers />} />
+            )}
+
             <NavElement
               href="/asignations/:id"
               value="ASIGNACIONES"
               icon={<BsListCheck />}
             />
-            <NavElement
-              href="/documents"
-              value="DOCUMENTOS"
-              icon={<IoDocumentTextSharp />}
-            />
+            {!esOperativo && (
+              <NavElement
+                href="/documents"
+                value="DOCUMENTOS"
+                icon={<IoDocumentTextSharp />}
+              />
+            )}
           </nav>
 
           {/* Foto perfil y menú móvil */}
@@ -182,24 +190,29 @@ function Header() {
                     icon={<FaHome />}
                     onClick={() => setMenuOpen(false)}
                   />
-                  <NavElement
-                    href="/users"
-                    value="USUARIOS"
-                    icon={<FaUsers />}
-                    onClick={() => setMenuOpen(false)}
-                  />
+                  {!esOperativo && (
+                    <NavElement
+                      href="/users"
+                      value="USUARIOS"
+                      icon={<FaUsers />}
+                      onClick={() => setMenuOpen(false)}
+                    />
+                  )}
                   <NavElement
                     href="/asignations/:id"
                     value="ASIGNACIONES"
                     icon={<BsListCheck />}
                     onClick={() => setMenuOpen(false)}
                   />
-                  <NavElement
-                    href="/documents"
-                    value="DOCUMENTOS"
-                    icon={<IoDocumentTextSharp />}
-                    onClick={() => setMenuOpen(false)}
-                  />
+
+                  {!esOperativo && (
+                    <NavElement
+                      href="/documents"
+                      value="DOCUMENTOS"
+                      icon={<IoDocumentTextSharp />}
+                      onClick={() => setMenuOpen(false)}
+                    />
+                  )}
                 </nav>
 
                 <a

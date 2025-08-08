@@ -36,7 +36,7 @@ function AreaDocument() {
   }, [area, categoria]);
 
   // Filtramos los documentos que sean la última versión
-  const documentosFiltrados = documentos; // sin filtro, muestra todos
+  const documentosFiltrados = documentos.filter((doc)=> doc.liberada === true); // sin filtro, muestra todos
 
   return (
     <Layout>

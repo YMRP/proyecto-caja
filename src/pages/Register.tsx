@@ -117,7 +117,7 @@ function Register() {
       console.log("Registro exitoso:", response.data);
 
       toast.success(
-        <div style={{ fontSize: "1.5rem", color: "green" }}>
+        <div style={{  color: "green" }}>
           Verificación enviada a tu dirección de correo
         </div>,
         {
@@ -143,7 +143,7 @@ function Register() {
             : JSON.stringify(data);
 
         toast.error(
-          <div style={{ fontSize: "1.5rem", color: "red" }}>
+          <div style={{ color: "red" }}>
             Error {status}: {message || "Error del servidor"}
           </div>,
           { position: "top-right" }
@@ -151,7 +151,7 @@ function Register() {
       } else {
         console.error("Error inesperado al registrar:", error);
         toast.error(
-          <div style={{ fontSize: "1.5rem", color: "red" }}>
+          <div style={{ color: "red" }}>
             Error inesperado al enviar datos
           </div>,
           {

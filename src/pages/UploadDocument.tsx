@@ -25,6 +25,7 @@ function UploadDocument() {
     firmado_por: "",
     autorizado_por: "",
     es_ultima: false,
+    liberada: false,
   });
 
   useEffect(() => {
@@ -109,8 +110,9 @@ function UploadDocument() {
     formData.append("firmado_por", formDataValues.firmado_por);
     formData.append("autorizado_por", formDataValues.autorizado_por);
     formData.append("es_ultima", formDataValues.es_ultima.toString());
-    formData.append("nombre_archivo", formDataValues.nombre_archivo);
+    formData.append("liberada", formDataValues.liberada.toString());
 
+    formData.append("nombre_archivo", formDataValues.nombre_archivo);
 
     if (formDataValues.archivo) {
       formData.append("archivo_path", formDataValues.archivo);
@@ -150,13 +152,12 @@ function UploadDocument() {
         firmado_por: "",
         autorizado_por: "",
         es_ultima: false,
+        liberada: false,
       });
     } catch (error: any) {
       console.error("Error:", error);
       toast.error(
-        <div style={{ fontSize: "1.5rem", color: "red" }}>
-          {"Error al subir versión"}
-        </div>,
+        <div style={{ color: "red" }}>{"Error al subir versión"}</div>,
         { position: "top-right" }
       );
     } finally {
@@ -308,6 +309,18 @@ function UploadDocument() {
                 className="mr-2"
               />
               <label className="font-medium">¿Es la última versión?</label>
+            </div>
+
+            <div className="flex items-center mt-4 col-span-full">
+              <input
+                type="checkbox"
+                name="liberada"
+                checked={formDataValues.liberada} 
+                onChange={handleInputChange}
+                className="mr-2"
+              />
+
+              <label className="font-medium">¿Liberada?</label>
             </div>
           </div>
 
