@@ -36,7 +36,7 @@ function Register() {
 
     if (password.length < 8) {
       toast.error(
-        <div style={{ fontSize: "1.5rem", color: "red" }}>
+        <div style={{ color: "red" }}>
           La contraseña debe tener al menos 8 caracteres
         </div>,
         { position: "top-right" }
@@ -46,7 +46,7 @@ function Register() {
 
     if (password !== passwordConfirmation) {
       toast.error(
-        <div style={{ fontSize: "1.5rem", color: "red" }}>
+        <div style={{  color: "red" }}>
           Las contraseñas no coinciden
         </div>,
         { position: "top-right" }
@@ -60,7 +60,7 @@ function Register() {
       !email.endsWith("@gmail.com")
     ) {
       toast.error(
-        <div style={{ fontSize: "1.5rem", color: "red" }}>
+        <div style={{ color: "red" }}>
           Dirección de correo no válida
         </div>,
         { position: "top-right" }
@@ -76,7 +76,7 @@ function Register() {
 
       if (response.data?.existe) {
         toast.error(
-          <div style={{ fontSize: "1.5rem", color: "red" }}>
+          <div style={{  color: "red" }}>
             El correo ya está registrado
           </div>,
           { position: "top-right" }
@@ -86,7 +86,7 @@ function Register() {
     } catch (error) {
       console.error("Error al validar correo:", error);
       toast.error(
-        <div style={{ fontSize: "1.5rem", color: "red" }}>
+        <div style={{ color: "red" }}>
           Error al validar el correo
         </div>,
         { position: "top-right" }
@@ -99,7 +99,7 @@ function Register() {
     const fechaActual: Date = new Date();
     console.log("ENVIADO EL: ", fechaActual);
     const loadingToast = toast.loading(
-      <div style={{ fontSize: "1.5rem", color: "black" }}>Cargando...</div>,
+      <div style={{  color: "black" }}>Cargando...</div>,
       {
         position: "top-right",
       }

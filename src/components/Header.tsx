@@ -6,20 +6,48 @@ import { useEffect, useState, useRef } from "react";
 import { FaHome, FaUsers } from "react-icons/fa";
 import { BsListCheck } from "react-icons/bs";
 import { IoDocumentTextSharp } from "react-icons/io5";
+import type { Usuario, LogSesion } from "../types/types";
 
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 
 function Header() {
   accessWithoutToken();
 
-  const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
+  const usuario: Usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
+  const id = usuario.id; // asumiendo que el usuario tiene un campo id
+
   const esOperativo = usuario.rol === "operativo";
 
   const [fotoPerfil, setFotoPerfil] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [ultimoAcceso, setUltimoAcceso] = useState<string | null>(null);
 
   useEffect(() => {
+    const obtenerUltimoAcceso = () => {
+      if (usuario && Array.isArray(usuario.logs_sesion)) {
+        // Filtramos solo sesiones cerradas (con fecha_fin no nulo)
+        const sesionesCerradas = (usuario.logs_sesion as LogSesion[])
+          .filter((log) => log.fecha_fin !== null)
+          .sort(
+            (a, b) =>
+              new Date(b.fecha_fin!).getTime() -
+              new Date(a.fecha_fin!).getTime()
+          );
+
+        if (sesionesCerradas.length > 0) {
+          const fecha = new Date(sesionesCerradas[0].fecha_fin!);
+          const fechaFormateada = fecha.toLocaleString("es-MX", {
+            dateStyle: "short",
+            timeStyle: "short",
+          });
+          setUltimoAcceso(fechaFormateada);
+        } else {
+          setUltimoAcceso("No hay registros previos");
+        }
+      }
+    };
+
     const obtenerImagen = async () => {
       const accessToken = localStorage.getItem("access");
       if (!accessToken) return;
@@ -38,7 +66,8 @@ function Header() {
     };
 
     obtenerImagen();
-  }, []);
+    obtenerUltimoAcceso();
+  }, [usuario]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -62,7 +91,55 @@ function Header() {
     };
   }, []);
 
-  // Cerrar menú si haces clic fuera
+  useEffect(() => {
+  const obtenerUltimoAccesoDesdeApi = async () => {
+    if (!usuario.id) {
+      setUltimoAcceso("Usuario no válido");
+      return;
+    }
+
+    const accessToken = localStorage.getItem("access");
+    if (!accessToken) {
+      setUltimoAcceso("No autorizado");
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${apiUrl}api/admin/usuarios/${usuario.id}/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const logsSesion: LogSesion[] = response.data.logs_sesion;
+
+      // Filtramos sesiones cerradas
+      const sesionesCerradas = logsSesion
+        .filter((log) => log.fecha_fin !== null)
+        .sort(
+          (a, b) =>
+            new Date(b.fecha_fin!).getTime() - new Date(a.fecha_fin!).getTime()
+        );
+
+      if (sesionesCerradas.length > 0) {
+        const fecha = new Date(sesionesCerradas[0].fecha_fin!);
+        const fechaFormateada = fecha.toLocaleString("es-MX", {
+          dateStyle: "short",
+          timeStyle: "short",
+        });
+        setUltimoAcceso(fechaFormateada);
+      } else {
+        setUltimoAcceso("No hay registros previos");
+      }
+    } catch (error: any) {
+      console.error("Error al obtener logs de sesión:", error.message);
+      setUltimoAcceso("Error al obtener último acceso");
+    }
+  };
+
+  obtenerUltimoAccesoDesdeApi();
+}, [usuario.id]); // Dependencia: si cambia el id del usuario, se vuelve a obtener
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -99,9 +176,8 @@ function Header() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-green-700 to-green-900 shadow-md w-full  top-0 z-50 ">
-      <header className="max-w-full  mx-auto flex items-center justify-between px-6 py-3 sm:py-4">
-        {/* Izquierda: Logo */}
+    <div className="bg-gradient-to-r from-green-700 to-green-900 shadow-md w-full top-0 z-50">
+      <header className="max-w-full mx-auto flex items-center justify-between px-6 py-3 sm:py-4">
         <div className="flex items-center">
           <a href="/home">
             <img
@@ -112,15 +188,12 @@ function Header() {
           </a>
         </div>
 
-        {/* Derecha: Nav + Perfil */}
         <div className="flex items-center gap-6">
-          {/* Navegación desktop */}
           <nav className="hidden md:flex items-center gap-8 text-white font-semibold">
             <NavElement href="/home" value="INICIO" icon={<FaHome />} />
             {!esOperativo && (
               <NavElement href="/users" value="USUARIOS" icon={<FaUsers />} />
             )}
-
             <NavElement
               href="/asignations/:id"
               value="ASIGNACIONES"
@@ -135,9 +208,7 @@ function Header() {
             )}
           </nav>
 
-          {/* Foto perfil y menú móvil */}
           <div className="relative flex items-center gap-4">
-            {/* Botón menú móvil */}
             <button
               className="md:hidden text-white focus:outline-none"
               onClick={toggleMenu}
@@ -168,7 +239,6 @@ function Header() {
               </svg>
             </button>
 
-            {/* Imagen perfil */}
             <img
               src={fotoPerfil || "images/default.jpg"}
               alt="FotoPerfil"
@@ -176,13 +246,11 @@ function Header() {
               onClick={toggleMenu}
             />
 
-            {/* Menú desplegable */}
             {menuOpen && (
               <div
                 ref={menuRef}
-                className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-2 text-sm text-gray-700"
+                className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-2 text-sm text-gray-700 "
               >
-                {/* Si estamos en móvil mostramos también navegación */}
                 <nav className="flex flex-col px-2 mb-2 md:hidden gap-2">
                   <NavElement
                     href="/home"
@@ -204,7 +272,6 @@ function Header() {
                     icon={<BsListCheck />}
                     onClick={() => setMenuOpen(false)}
                   />
-
                   {!esOperativo && (
                     <NavElement
                       href="/documents"
@@ -228,6 +295,15 @@ function Header() {
                 >
                   Cerrar sesión
                 </button>
+
+                {ultimoAcceso && (
+                  <button
+                    onClick={() => alert(`Último acceso: ${ultimoAcceso}`)}
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer text-xs text-gray-500"
+                  >
+                    Último acceso: {ultimoAcceso}
+                  </button>
+                )}
               </div>
             )}
           </div>

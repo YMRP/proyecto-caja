@@ -24,7 +24,7 @@ function Hero() {
           Bienvenido <span className="text-yellow-300">{nombreUsuario}</span> al panel de administración de
         </h1>
         <h2 className="text-3xl md:text-4xl font-semibold text-yellow-300">
-          Caja Popular Tlajomulco
+          Caja Popular San José de Tlajomulco
         </h2>
         <p className="mt-6 text-lg md:text-xl text-white/90">
           Administra documentos, versiones y asignaciones de forma segura y eficiente.

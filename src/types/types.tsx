@@ -16,6 +16,7 @@ export type navElement = {
 };
 
 
+
 // types/types.ts
 export type Usuario = {
   id: number;
@@ -37,7 +38,7 @@ export type Usuario = {
   logs_sesion?: LogSesion[];
 }
 
-type LogSesion = {
+export type LogSesion = {
   fecha_fin: string
   fecha_inicio:string
   ip_acceso:string

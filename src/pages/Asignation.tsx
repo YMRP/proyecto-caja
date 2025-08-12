@@ -11,6 +11,9 @@ import { MdPreview } from "react-icons/md";
 const apiUrl = import.meta.env.VITE_URL_BACKEND;
 
 function Asignation() {
+  const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
+  const esOperativo = usuario.rol === "operativo";
+
   const [asignaciones, setAsignaciones] = useState<AsignacionProps[]>([]);
   const accessToken = localStorage.getItem("access");
   const navigate = useNavigate(); // <-- Inicializa useNavigate
@@ -22,7 +25,7 @@ function Asignation() {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setAsignaciones(res.data);
-        console.log("PARA ASIGNACIONES: ",res.data);
+        console.log("PARA ASIGNACIONES: ", res.data);
       } catch (error) {
         console.error("Error al obtener asignaciones:", error);
         toast.error(
@@ -103,12 +106,14 @@ function Asignation() {
         <HeaderPages text="Asignaciones" />
 
         <div className="max-w-6xl mx-auto">
-          <button
-            onClick={handleCrearAsignacion}
-            className="mb-6 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300"
-          >
-            Crear asignación
-          </button>
+          {!esOperativo && (
+            <button
+              onClick={handleCrearAsignacion}
+              className="mb-6 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300"
+            >
+              Crear asignación
+            </button>
+          )}
 
           {asignaciones.length === 0 ? (
             <p className="text-gray-700 text-lg">
@@ -116,7 +121,7 @@ function Asignation() {
             </p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm mb-20 text-center">
+              <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm mb-20 text-center mt-6">
                 <thead className="bg-green-800 text-white text-sm uppercase">
                   <tr>
                     <th className="py-3 px-4 text-center">Documento</th>
@@ -151,7 +156,16 @@ function Asignation() {
                           : "-"}
                       </td>
                       <td className="py-3 px-4">{a.observaciones || "-"}</td>
-                      <td className="py-3 px-4 "><a className="text-2xl text-blue-700 text-center flex justify-center items-center" href={a.archivo_path} target="_blank"> {<MdPreview/>}</a></td>
+                      <td className="py-3 px-4 ">
+                        <a
+                          className="text-2xl text-blue-700 text-center flex justify-center items-center"
+                          href={a.archivo_path}
+                          target="_blank"
+                        >
+                          {" "}
+                          {<MdPreview />}
+                        </a>
+                      </td>
                       <td className="py-3 px-4">
                         {a.revisado || a.liberado ? (
                           <span className="text-green-700 text-lg font-bold flex flex-col items-center">
