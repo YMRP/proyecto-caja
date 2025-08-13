@@ -82,7 +82,7 @@ function Asignation() {
       );
     } catch (error) {
       toast.error(
-        <div style={{ fontSize: "1.5rem", color: "green" }}>
+        <div style={{  color: "green" }}>
           {"error al marcar como revisada"}
         </div>,
         { position: "top-right" }

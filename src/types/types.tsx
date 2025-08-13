@@ -36,6 +36,7 @@ export type Usuario = {
   last_login?: string
   password_sugerido?: string
   logs_sesion?: LogSesion[];
+  perfil_operativo?:string
 }
 
 export type LogSesion = {

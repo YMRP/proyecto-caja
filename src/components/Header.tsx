@@ -3,7 +3,7 @@ import api from "../api/axios";
 import { accessWithoutToken } from "../utils/noToken";
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
-import { FaHome, FaUsers } from "react-icons/fa";
+import { FaHome, FaUsers, FaBell } from "react-icons/fa";
 import { BsListCheck } from "react-icons/bs";
 import { IoDocumentTextSharp } from "react-icons/io5";
 import type { Usuario, LogSesion } from "../types/types";
@@ -22,6 +22,41 @@ function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [ultimoAcceso, setUltimoAcceso] = useState<string | null>(null);
+
+  const [notificacionesOpen, setNotificacionesOpen] = useState(false);
+  const notiRef = useRef<HTMLDivElement>(null);
+
+  const [notificaciones, setNotificaciones] = useState<
+    { id: number; texto: string }[]
+  >([]);
+
+  useEffect(() => {
+    const obtenerAsignacionesPendientes = async () => {
+      const accessToken = localStorage.getItem("access");
+      if (!accessToken) return;
+
+      try {
+        const res = await axios.get(`${apiUrl}api/mis-asignaciones/`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        const pendientes = res.data.filter(
+          (asignacion: any) => asignacion.revisado === false
+        );
+
+        const formateadas = pendientes.map((a: any) => ({
+          id: a.id,
+          texto: `Asignación pendiente: ${a.documento_titulo}`,
+        }));
+
+        setNotificaciones(formateadas);
+      } catch (err: any) {
+        console.error("Error al obtener asignaciones pendientes:", err.message);
+      }
+    };
+
+    obtenerAsignacionesPendientes();
+  }, []);
 
   useEffect(() => {
     const obtenerUltimoAcceso = () => {
@@ -92,53 +127,57 @@ function Header() {
   }, []);
 
   useEffect(() => {
-  const obtenerUltimoAccesoDesdeApi = async () => {
-    if (!usuario.id) {
-      setUltimoAcceso("Usuario no válido");
-      return;
-    }
+    const obtenerUltimoAccesoDesdeApi = async () => {
+      if (!usuario.id) {
+        setUltimoAcceso("Usuario no válido");
+        return;
+      }
 
-    const accessToken = localStorage.getItem("access");
-    if (!accessToken) {
-      setUltimoAcceso("No autorizado");
-      return;
-    }
+      const accessToken = localStorage.getItem("access");
+      if (!accessToken) {
+        setUltimoAcceso("No autorizado");
+        return;
+      }
 
-    try {
-      const response = await axios.get(`${apiUrl}api/admin/usuarios/${usuario.id}/`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      const logsSesion: LogSesion[] = response.data.logs_sesion;
-
-      // Filtramos sesiones cerradas
-      const sesionesCerradas = logsSesion
-        .filter((log) => log.fecha_fin !== null)
-        .sort(
-          (a, b) =>
-            new Date(b.fecha_fin!).getTime() - new Date(a.fecha_fin!).getTime()
+      try {
+        const response = await axios.get(
+          `${apiUrl}api/admin/usuarios/${usuario.id}/`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
         );
 
-      if (sesionesCerradas.length > 0) {
-        const fecha = new Date(sesionesCerradas[0].fecha_fin!);
-        const fechaFormateada = fecha.toLocaleString("es-MX", {
-          dateStyle: "short",
-          timeStyle: "short",
-        });
-        setUltimoAcceso(fechaFormateada);
-      } else {
-        setUltimoAcceso("No hay registros previos");
-      }
-    } catch (error: any) {
-      console.error("Error al obtener logs de sesión:", error.message);
-      setUltimoAcceso("Error al obtener último acceso");
-    }
-  };
+        const logsSesion: LogSesion[] = response.data.logs_sesion;
 
-  obtenerUltimoAccesoDesdeApi();
-}, [usuario.id]); // Dependencia: si cambia el id del usuario, se vuelve a obtener
+        // Filtramos sesiones cerradas
+        const sesionesCerradas = logsSesion
+          .filter((log) => log.fecha_fin !== null)
+          .sort(
+            (a, b) =>
+              new Date(b.fecha_fin!).getTime() -
+              new Date(a.fecha_fin!).getTime()
+          );
+
+        if (sesionesCerradas.length > 0) {
+          const fecha = new Date(sesionesCerradas[0].fecha_fin!);
+          const fechaFormateada = fecha.toLocaleString("es-MX", {
+            dateStyle: "short",
+            timeStyle: "short",
+          });
+          setUltimoAcceso(fechaFormateada);
+        } else {
+          setUltimoAcceso("No hay registros previos");
+        }
+      } catch (error: any) {
+        console.error("Error al obtener logs de sesión:", error.message);
+        setUltimoAcceso("Error al obtener último acceso");
+      }
+    };
+
+    obtenerUltimoAccesoDesdeApi();
+  }, [usuario.id]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -149,17 +188,30 @@ function Header() {
       ) {
         setMenuOpen(false);
       }
+      if (
+        notiRef.current &&
+        !notiRef.current.contains(event.target as Node) &&
+        !(event.target as HTMLElement).classList.contains("noti-icon")
+      ) {
+        setNotificacionesOpen(false);
+      }
     }
-    if (menuOpen) {
+    if (menuOpen || notificacionesOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [menuOpen]);
+  }, [menuOpen, notificacionesOpen]);
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
+    setNotificacionesOpen(false);
+  };
+
+  const toggleNotificaciones = () => {
+    setNotificacionesOpen((prev) => !prev);
+    setMenuOpen(false);
   };
 
   const cerrarSesion = async () => {
@@ -206,6 +258,20 @@ function Header() {
                 icon={<IoDocumentTextSharp />}
               />
             )}
+
+            <button
+              onClick={toggleNotificaciones}
+              className="relative noti-icon focus:outline-none"
+              aria-label="Mostrar notificaciones"
+              type="button"
+            >
+              <FaBell className="text-white w-6 h-6" />
+              {notificaciones.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                  {notificaciones.length}
+                </span>
+              )}
+            </button>
           </nav>
 
           <div className="relative flex items-center gap-4">
@@ -303,6 +369,31 @@ function Header() {
                   >
                     Último acceso: {ultimoAcceso}
                   </button>
+                )}
+              </div>
+            )}
+
+            {notificacionesOpen && (
+              <div
+                ref={notiRef}
+                className="absolute right-10 top-full mt-2 w-64 bg-white rounded-md shadow-lg py-2 text-sm text-gray-700 z-50"
+              >
+                <h3 className="font-semibold px-4 py-2 border-b border-gray-200">
+                  Notificaciones
+                </h3>
+                {notificaciones.length === 0 ? (
+                  <p className="px-4 py-2 text-gray-500">
+                    No hay notificaciones
+                  </p>
+                ) : (
+                  notificaciones.map((noti) => (
+                    <p
+                      key={noti.id}
+                      className="px-4 py-2 border-b border-gray-100 last:border-none"
+                    >
+                      {noti.texto}
+                    </p>
+                  ))
                 )}
               </div>
             )}
