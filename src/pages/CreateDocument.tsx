@@ -130,7 +130,7 @@ const [formKey, setFormKey] = useState(0);
       resetFormulario(); 
       console.log("Documento creado:", response.data);
       toast.success(
-        <div style={{ color: "green" }}>{response.data.mensaje}</div>,
+        <div style={{ color: "green" }}>{"Carpeta creada correctamente"}</div>,
         { position: "top-right" }
       );
     } catch (error: any) {

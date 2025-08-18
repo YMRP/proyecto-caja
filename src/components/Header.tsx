@@ -40,10 +40,7 @@ function Header() {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
 
-        const pendientes = res.data.filter(
-          (asignacion: any) => asignacion.revisado === false
-        );
-
+        const pendientes = res.data.filter((a: any) => !a.revisado);
         const formateadas = pendientes.map((a: any) => ({
           id: a.id,
           texto: `Asignación pendiente: ${a.documento_titulo}`,
@@ -56,6 +53,9 @@ function Header() {
     };
 
     obtenerAsignacionesPendientes();
+    const interval = setInterval(obtenerAsignacionesPendientes, 30000); // cada 30s
+
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -378,9 +378,17 @@ function Header() {
                 ref={notiRef}
                 className="absolute right-10 top-full mt-2 w-64 bg-white rounded-md shadow-lg py-2 text-sm text-gray-700 z-50"
               >
-                <h3 className="font-semibold px-4 py-2 border-b border-gray-200">
-                  Notificaciones
-                </h3>
+               <h3 className="font-semibold px-4 py-2 border-b border-gray-200 flex justify-between items-center">
+  Notificaciones
+  {notificaciones.length > 0 && (
+    <button
+      onClick={() => setNotificaciones([])}
+      className="text-xs text-red-500 hover:underline"
+    >
+      Limpiar
+    </button>
+  )}
+</h3>
                 {notificaciones.length === 0 ? (
                   <p className="px-4 py-2 text-gray-500">
                     No hay notificaciones
