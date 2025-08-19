@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // <-- IMPORT
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import HeaderPages from "../components/HeaderPages";
 import { toast } from "sonner";
@@ -15,8 +15,17 @@ function Asignation() {
   const esOperativo = usuario.rol === "operativo";
 
   const [asignaciones, setAsignaciones] = useState<AsignacionProps[]>([]);
+  const [idsLimpiados, setIdsLimpiados] = useState<number[]>([]); // IDs ocultos
   const accessToken = localStorage.getItem("access");
-  const navigate = useNavigate(); // <-- Inicializa useNavigate
+  const navigate = useNavigate();
+
+  // ✅ cargar idsLimpiados desde localStorage al iniciar
+  useEffect(() => {
+    const guardados = localStorage.getItem("idsLimpiados");
+    if (guardados) {
+      setIdsLimpiados(JSON.parse(guardados));
+    }
+  }, []);
 
   useEffect(() => {
     const fetchAsignaciones = async () => {
@@ -49,7 +58,7 @@ function Asignation() {
       setAsignaciones((prev) =>
         prev.map((a) =>
           a.id === id
-            ? { ...a, revisado: true, fecha_revision: new Date().toISOString() }
+            ? { ...a, liberado: true, fecha_revision: new Date().toISOString() }
             : a
         )
       );
@@ -59,7 +68,6 @@ function Asignation() {
     }
   };
 
-  // Función para marcar como revisado
   const handleMarcarRevisado = async (id: number) => {
     try {
       await axios.post(
@@ -70,7 +78,7 @@ function Asignation() {
         }
       );
       toast.success(
-        <div style={{ color: "green" }}>{"Version marcada como revisada"}</div>,
+        <div style={{ color: "green" }}>{"Versión marcada como revisada"}</div>,
         { position: "top-right" }
       );
       setAsignaciones((prev) =>
@@ -82,8 +90,8 @@ function Asignation() {
       );
     } catch (error) {
       toast.error(
-        <div style={{  color: "green" }}>
-          {"error al marcar como revisada"}
+        <div style={{ color: "red" }}>
+          {"Error al marcar como revisada"}
         </div>,
         { position: "top-right" }
       );
@@ -91,14 +99,27 @@ function Asignation() {
     }
   };
 
-  // función para crear asignación
   const handleCrearAsignacion = () => {
     const idParaCrear =
       asignaciones.length > 0 ? asignaciones[0].version_id : 0;
     navigate(`/newAsignation/${idParaCrear}`);
   };
 
-  // ... aquí sigue tu código handleLiberar y handleMarcarRevisado
+  // 🔴 Nueva función: limpiar asignaciones y guardar en localStorage
+  const handleLimpiar = () => {
+    const ids = asignaciones
+      .filter((a) => a.liberado || a.revisado)
+      .map((a) => a.id);
+
+    const nuevos = [...new Set([...idsLimpiados, ...ids])]; // merge con previos
+
+    setIdsLimpiados(nuevos);
+    localStorage.setItem("idsLimpiados", JSON.stringify(nuevos)); // persistencia
+
+    setAsignaciones((prev) =>
+      prev.filter((a) => !(a.liberado || a.revisado))
+    );
+  };
 
   return (
     <Layout>
@@ -106,14 +127,25 @@ function Asignation() {
         <HeaderPages text="Asignaciones" />
 
         <div className="max-w-6xl mx-auto">
-          {!esOperativo && (
-            <button
-              onClick={handleCrearAsignacion}
-              className="mb-6 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300"
-            >
-              Crear asignación
-            </button>
-          )}
+          <div className="flex gap-4 mb-6">
+            {!esOperativo && (
+              <button
+                onClick={handleCrearAsignacion}
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300"
+              >
+                Crear asignación
+              </button>
+            )}
+
+            {asignaciones.length > 0 && (
+              <button
+                onClick={handleLimpiar}
+                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300"
+              >
+                Limpiar
+              </button>
+            )}
+          </div>
 
           {asignaciones.length === 0 ? (
             <p className="text-gray-700 text-lg">
@@ -135,60 +167,67 @@ function Asignation() {
                   </tr>
                 </thead>
                 <tbody>
-                  {asignaciones.map((a) => (
-                    <tr
-                      key={a.id}
-                      className={`border-b border-gray-200 ${
-                        a.revisado || a.liberado ? "bg-green-100" : "bg-white"
-                      }`}
-                    >
-                      <td className="py-3 px-4">{a.documento_titulo}</td>
-                      <td className="py-3 px-4">{a.numero_version}</td>
-                      <td className="py-3 px-4">
-                        {a.fecha_asignacion
-                          ? new Date(a.fecha_asignacion).toLocaleString()
-                          : "-"}
-                      </td>
-                      <td className="py-3 px-4">{a.revisado ? "Sí" : "No"}</td>
-                      <td className="py-3 px-4">
-                        {a.fecha_revision
-                          ? new Date(a.fecha_revision).toLocaleString()
-                          : "-"}
-                      </td>
-                      <td className="py-3 px-4">{a.observaciones || "-"}</td>
-                      <td className="py-3 px-4 ">
-                        <a
-                          className="text-2xl text-blue-700 text-center flex justify-center items-center"
-                          href={a.archivo_path}
-                          target="_blank"
-                        >
-                          {" "}
-                          {<MdPreview />}
-                        </a>
-                      </td>
-                      <td className="py-3 px-4">
-                        {a.revisado || a.liberado ? (
-                          <span className="text-green-700 text-lg font-bold flex flex-col items-center">
-                            <FaCheckCircle />
-                          </span>
-                        ) : a.tipo_asignacion === "control" ? (
-                          <button
-                            onClick={() => handleLiberar(a.id)}
-                            className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-1 px-3 rounded transition duration-200 w-full"
+                  {asignaciones
+                    .filter((a) => !idsLimpiados.includes(a.id)) // ocultar ids limpiados
+                    .map((a) => (
+                      <tr
+                        key={a.id}
+                        className={`border-b border-gray-200 ${
+                          a.revisado || a.liberado
+                            ? "bg-green-100"
+                            : "bg-white"
+                        }`}
+                      >
+                        <td className="py-3 px-4">{a.documento_titulo}</td>
+                        <td className="py-3 px-4">{a.numero_version}</td>
+                        <td className="py-3 px-4">
+                          {a.fecha_asignacion
+                            ? new Date(a.fecha_asignacion).toLocaleString()
+                            : "-"}
+                        </td>
+                        <td className="py-3 px-4">
+                          {a.revisado ? "Sí" : "No"}
+                        </td>
+                        <td className="py-3 px-4">
+                          {a.fecha_revision
+                            ? new Date(a.fecha_revision).toLocaleString()
+                            : "-"}
+                        </td>
+                        <td className="py-3 px-4">
+                          {a.observaciones || "-"}
+                        </td>
+                        <td className="py-3 px-4 ">
+                          <a
+                            className="text-2xl text-blue-700 text-center flex justify-center items-center"
+                            href={a.archivo_path}
+                            target="_blank"
                           >
-                            Liberar
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => handleMarcarRevisado(a.id)}
-                            className="bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-3 rounded transition duration-200"
-                          >
-                            Marcar revisado
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
+                            <MdPreview />
+                          </a>
+                        </td>
+                        <td className="py-3 px-4">
+                          {a.revisado || a.liberado ? (
+                            <span className="text-green-700 text-lg font-bold flex flex-col items-center">
+                              <FaCheckCircle />
+                            </span>
+                          ) : a.tipo_asignacion === "control" ? (
+                            <button
+                              onClick={() => handleLiberar(a.id)}
+                              className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-1 px-3 rounded transition duration-200 w-full"
+                            >
+                              Liberar
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleMarcarRevisado(a.id)}
+                              className="bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-3 rounded transition duration-200"
+                            >
+                              Marcar revisado
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
