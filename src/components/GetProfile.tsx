@@ -26,7 +26,6 @@ export function GetProfile() {
         toast.dismiss(loadingToast);
 
         setUsuario(response.data);
-        console.log("obtener perfil: ",response.data);
       } catch (err: any) {
         console.error("Error al obtener perfil:", err.message);
         setError("No se pudo cargar el perfil del usuario.");

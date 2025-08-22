@@ -97,7 +97,6 @@ function Register() {
     // Si pasó la validación, registrar al usuario
     const rol = "operativo";
     const fechaActual: Date = new Date();
-    console.log("ENVIADO EL: ", fechaActual);
     const loadingToast = toast.loading(
       <div style={{  color: "black" }}>Cargando...</div>,
       {
@@ -114,7 +113,6 @@ function Register() {
       });
       toast.dismiss(loadingToast);
 
-      console.log("Registro exitoso:", response.data);
 
       toast.success(
         <div style={{  color: "green" }}>

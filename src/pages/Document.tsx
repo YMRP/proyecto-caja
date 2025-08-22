@@ -48,7 +48,6 @@ function Document() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log("Documentos visibles: ", response.data);
       const docFiltrado = response.data.find(
         (doc: any) => doc.id === Number(id)
       );

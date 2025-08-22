@@ -34,7 +34,6 @@ function Asignation() {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setAsignaciones(res.data);
-        console.log("PARA ASIGNACIONES: ", res.data);
       } catch (error) {
         console.error("Error al obtener asignaciones:", error);
         toast.error(

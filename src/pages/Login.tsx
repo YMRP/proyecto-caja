@@ -59,7 +59,6 @@ function Login() {
       });
 
       toast.dismiss(loadingToast);
-      console.log(response.data);
       if (response.data.login) {
         // Si el usuario tiene que cambiar su contraseña, no guardar los tokens aún
         if (response.data.requerir_cambio_password) {

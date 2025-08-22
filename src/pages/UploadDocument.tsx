@@ -126,10 +126,7 @@ function UploadDocument() {
     );
 
     try {
-      console.log("Enviando datos:", {
-        tipo_categoria: formDataValues.tipo_categoria,
-        // ... otros campos
-      });
+   
 
       await axios.post(`${apiUrl}/api/crear-version/`, formData, {
         headers: {

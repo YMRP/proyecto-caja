@@ -128,7 +128,6 @@ function User() {
   };
 
   const guardarCambios = async () => {
-  console.log("Guardando...");
   if (!usuario || usuario.nombre === "") {
     toast.error(<div style={{ color: "red" }}>Existen campos vacíos</div>, {
       position: "top-right",
@@ -158,7 +157,6 @@ function User() {
       <div style={{ color: "green" }}>Cambios guardados correctamente</div>,
       { position: "top-right" }
     );
-    console.log("Guardado");
   } catch (err: any) {
     toast.error(
       <div style={{ color: "red" }}>Error al guardar los cambios</div>,

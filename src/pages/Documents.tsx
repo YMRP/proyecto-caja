@@ -32,7 +32,6 @@ function Documents() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log(response.data)
       const docsConUltimaVersion = response.data.map((doc: any) => {
         const ultimaVersion = doc.versiones.find((v: any) => v.es_ultima);
         return {

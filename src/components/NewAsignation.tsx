@@ -177,13 +177,10 @@ function NewAsignation() {
 
     if (modoAsignacion === "usuario" && formData.usuarioId) {
       payload.usuario_asignado = formData.usuarioId;
-      console.log("Payload para usuario específico:", payload);
     } else if (modoAsignacion === "perfil" && formData.perfilOperativo) {
       payload.perfil_operativo = formData.perfilOperativo;
-      console.log("Payload para perfil operativo:", payload);
     } else if (modoAsignacion === "todos") {
       // No agregamos usuario_asignado ni perfil_operativo
-      console.log("Payload para todos los usuarios:", payload);
     } else {
       console.warn("Modo de asignación desconocido:", modoAsignacion);
     }
@@ -206,27 +203,19 @@ function NewAsignation() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // ===== LOG: estado inicial del formulario =====
-    console.log("=== DEBUG: Estado inicial del formulario ===");
-    console.log("formData completo:", formData);
-    console.log("versionId:", formData.versionId);
-    console.log("modoAsignacion:", modoAsignacion);
-    console.log("tipoAsignacion:", formData.tipoAsignacion);
+
 
     // Validación del formulario
     if (!validateForm()) {
-      console.log("=== DEBUG: Validación falló, no se envía el payload ===");
       return;
     }
 
     // Construir payload
     const payload = buildPayload();
-    console.log("=== DEBUG: Payload construido ===");
-    console.log(payload);
+   
 
     try {
       setLoading(true);
-      console.log("=== DEBUG: Enviando payload al backend ===");
 
       const res = await axios.post(
         `${apiUrl}api/asignaciones/crear/`,
@@ -236,9 +225,7 @@ function NewAsignation() {
         }
       );
 
-      // ===== LOG: respuesta del backend =====
-      console.log("=== DEBUG: Respuesta backend ===");
-      console.log(res.data);
+
 
       toast.success(res.data.mensaje || "Asignación registrada con éxito", {
         position: "top-right",
@@ -264,7 +251,6 @@ function NewAsignation() {
         toast.error("Error de conexión", { position: "top-right" });
       }
     } finally {
-      console.log("=== DEBUG: Finalizando handleSubmit ===");
       setLoading(false);
     }
   };

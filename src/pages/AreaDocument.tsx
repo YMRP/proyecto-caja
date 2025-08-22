@@ -23,7 +23,6 @@ function AreaDocument() {
             },
           }
         );
-        console.log("Documentos recibidos:", response.data);
         setDocumentos(response.data);
       } catch (error: any) {
         console.error("Error al obtener documentos:", error);

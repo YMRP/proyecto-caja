@@ -58,7 +58,6 @@ function ModDocument() {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
 
-        console.log(response.data);
         const doc = response.data.find((d: any) => d.id === Number(id));
         if (!doc) throw new Error("Documento no encontrado");
 
@@ -90,7 +89,6 @@ function ModDocument() {
           firmado_por: doc.firmado_por || "",
           autorizado_por: doc.autorizado_por || "",
         });
-        console.log("Datos despues del set: ", formDataValues);
       } catch (err: any) {
         console.error("Error al obtener documento:", err.message);
         toast.error("Documento no encontrado");

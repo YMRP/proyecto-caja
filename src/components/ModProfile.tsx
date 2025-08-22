@@ -73,7 +73,6 @@ export function ModProfile() {
         toast.dismiss(loadingToast);
 
         const userData = response.data;
-        console.log(userData);
         setNombre(userData.nombre || "");
         setPerfilOp(userData.perfil_operativo || "");
         setPassword("");
@@ -121,7 +120,6 @@ export function ModProfile() {
         <div style={{ color: "red" }}>{"Error al actualizar perfil"}</div>,
         { position: "top-right" }
       );
-      console.log(e);
     }
   };
 

@@ -20,8 +20,7 @@ function Users() {
           },
         });
         setUsuarios(response.data);
-        console.log("Datos crudos:", response.data);
-        console.log("Es array:", Array.isArray(response.data));
+        
       } catch (err: any) {
         console.error("Error al obtener usuarios:", err.message);
 
