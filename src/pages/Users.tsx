@@ -65,7 +65,7 @@ function Users() {
         <HeaderPages text="Usuarios" />
         <div className="overflow-x-auto rounded-lg shadow">
           <table className="min-w-full bg-white divide-y divide-gray-200 text-left text-gray-800">
-            <thead className="bg-green-700 text-white">
+            <thead className="bg-[var(--jade)] text-white">
               <tr>
                 <th className="px-4 py-3">Eliminar</th>
                 <th className="px-4 py-3">Usuario</th>

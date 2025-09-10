@@ -47,12 +47,12 @@ export function GetProfile() {
         <img
           src={usuario.foto_perfil || "img/default.jpg"}
           alt="Foto de perfil"
-          className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover ring-2 ring-green-500 shadow"
+          className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover ring-2 ring-[var(--cielo)] shadow"
         />
 
         {/* Datos del usuario */}
         <div className="text-center md:text-left">
-          <p className="text-lg font-semibold text-green-800">
+          <p className="text-lg font-semibold text-[var(--jade)]">
             {usuario.nombre}
           </p>
           <p className="text-gray-700">

@@ -50,20 +50,20 @@ function Home() {
     <div className="flex flex-col min-h-screen">
       <Header />
 
-      <main className="flex-grow">
+      <main className="flex-grow bg-[var(--agua)] ">
         <Hero />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 p-6">
           {AREAS.map(({ key, label, Icon }) => (
             <Link
               to={`/area/${key}`}
               key={key}
-              className="group flex flex-col items-center justify-center border-2 border-white rounded-lg p-8 shadow-md bg-transparent
-                         hover:bg-yellow-600 transition-colors duration-300"
+              className="group flex flex-col items-center justify-center border-2 border-[var(--cielo)] rounded-lg p-8 shadow-md bg-white
+                         hover:bg-[var(--sol)] transition-colors duration-300"
             >
-              <div className="bg-white group-hover:bg-yellow-800 rounded-full p-4 mb-5 transition-colors duration-300">
+              <div className="bg-white group-hover:bg-[var(--darkerSol)] rounded-full p-4 mb-5 transition-colors duration-300">
                 <Icon
                   size={56}
-                  className="text-yellow-600 group-hover:text-white transition-colors duration-300"
+                  className="text-[var(--darkerSol)] group-hover:text-white transition-colors duration-300"
                 />
               </div>
               <span className="text-black group-hover:text-white uppercase text-lg tracking-wide font-semibold text-center">

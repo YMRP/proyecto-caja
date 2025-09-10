@@ -269,7 +269,7 @@ function NewAsignation() {
   return (
     <Layout>
       <div className="flex flex-col px-4 sm:px-10 md:px-20 py-10 gap-6">
-        <HeaderPages text="Nueva asignación" />
+        <HeaderPages text="Asignación de documento" />
         <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl mx-auto">
           {/* Documento */}
           <div className="flex flex-col">
@@ -396,7 +396,7 @@ function NewAsignation() {
           <div className="text-end">
             <button
               type="submit"
-              className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[var(--cielo)] text-white px-6 py-2 rounded hover:bg-[var(--jade)] transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               disabled={loading}
             >
               {loading ? "Procesando..." : "Asignar"}

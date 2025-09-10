@@ -130,7 +130,7 @@ function Asignation() {
             {!esOperativo && (
               <button
                 onClick={handleCrearAsignacion}
-                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300"
+                className="bg-[var(--cielo)] hover:bg-[var(--jade)] text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 cursor-pointer"
               >
                 Crear asignación
               </button>
@@ -139,7 +139,7 @@ function Asignation() {
             {asignaciones.length > 0 && (
               <button
                 onClick={handleLimpiar}
-                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300"
+                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 cursor-pointer"
               >
                 Limpiar
               </button>
@@ -147,13 +147,13 @@ function Asignation() {
           </div>
 
           {asignaciones.length === 0 ? (
-            <p className="text-gray-700 text-lg">
+            <p className="text-gray-700 text-lg text-center">
               No tienes asignaciones pendientes.
             </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm mb-20 text-center mt-6">
-                <thead className="bg-green-800 text-white text-sm uppercase">
+                <thead className="bg-[var(--jade)] text-white text-sm uppercase">
                   <tr>
                     <th className="py-3 px-4 text-center">Documento</th>
                     <th className="py-3 px-4 text-center">Versión</th>
@@ -173,7 +173,7 @@ function Asignation() {
                         key={a.id}
                         className={`border-b border-gray-200 ${
                           a.revisado || a.liberado
-                            ? "bg-green-100"
+                            ? "bg-[var(--agua)]"
                             : "bg-white"
                         }`}
                       >
@@ -212,14 +212,14 @@ function Asignation() {
                           ) : a.tipo_asignacion === "control" ? (
                             <button
                               onClick={() => handleLiberar(a.id)}
-                              className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-1 px-3 rounded transition duration-200 w-full"
+                              className="bg-[var(--sol)] hover:bg-[var(--darkerSol)] text-white font-medium py-1 px-3 rounded transition duration-200 w-full cursor-pointer"
                             >
                               Liberar
                             </button>
                           ) : (
                             <button
                               onClick={() => handleMarcarRevisado(a.id)}
-                              className="bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-3 rounded transition duration-200"
+                              className="bg-[var(--cielo)] hover:bg-[var(--jade)] text-white font-medium py-1 px-3 rounded transition duration-200"
                             >
                               Marcar revisado
                             </button>

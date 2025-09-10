@@ -367,7 +367,7 @@ function User() {
 
         <div className="bg-white shadow rounded-lg overflow-x-auto">
           <table className="min-w-full text-sm text-left text-gray-700">
-            <thead className="bg-green-700 text-white">
+            <thead className="bg-[var(--jade)] text-white">
               <tr>
                 <th className="px-4 py-2">#</th>
                 <th className="px-4 py-2">Inicio</th>

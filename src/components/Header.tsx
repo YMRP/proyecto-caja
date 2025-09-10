@@ -228,12 +228,12 @@ function Header() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-green-700 to-green-900 shadow-md w-full top-0 z-50">
+    <div className="bg-white shadow-md w-full top-0 z-50">
       <header className="max-w-full mx-auto flex items-center justify-between px-6 py-3 sm:py-4">
         <div className="flex items-center">
           <a href="/home">
             <img
-              src="/images/logo.jpg"
+              src="/images/logo_blanco.png"
               alt="Logo"
               className="h-12 w-auto sm:h-16"
             />
@@ -265,7 +265,7 @@ function Header() {
               aria-label="Mostrar notificaciones"
               type="button"
             >
-              <FaBell className="text-white w-6 h-6" />
+              <FaBell className="text-[var(--jade)] w-6 h-6" />
               {notificaciones.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
                   {notificaciones.length}
@@ -308,7 +308,7 @@ function Header() {
             <img
               src={fotoPerfil || "images/default.jpg"}
               alt="FotoPerfil"
-              className="profile-pic w-10 h-10 rounded-full cursor-pointer ring-2 ring-white hover:ring-green-300 transition duration-200"
+              className="profile-pic w-10 h-10 rounded-full cursor-pointer ring-2 ring-white hover:ring-[var(--jade)] transition duration-200"
               onClick={toggleMenu}
             />
 

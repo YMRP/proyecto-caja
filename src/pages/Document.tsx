@@ -117,8 +117,8 @@ function Document() {
                 onClick={() => setFiltroCategoria(value)}
                 className={`px-4 py-2 rounded font-medium text-sm border ${
                   filtroCategoria === value
-                    ? "bg-green-600 text-white"
-                    : "bg-white text-green-600 hover:bg-green-50 hover:cursor-pointer"
+                    ? "bg-[var(--jade)] text-white"
+                    : "bg-white text-[var(--jade)] hover:bg-[var(--agua)] hover:cursor-pointer"
                 }`}
               >
                 {label}
@@ -128,7 +128,8 @@ function Document() {
         )}
 
         {/* Tabla de versiones */}
-        <table className="w-full table-auto border border-gray-300 shadow-md">
+        <div className="overflow-x-auto w-full">
+<table className="w-full table-auto border border-gray-300 shadow-md ">
           <thead className="bg-gray-100 text-gray-800">
             <tr>
               <th className="py-2 px-4 border border-gray-300 text-left">#</th>
@@ -234,6 +235,8 @@ function Document() {
               ))}
           </tbody>
         </table>
+        </div>
+        
 
         {/* Tabla de metadatos del documento */}
         <table className="w-full table-auto border border-gray-300 shadow-md mb-8">

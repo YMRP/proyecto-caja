@@ -1,5 +1,41 @@
 @import "tailwindcss";
 
+:root{
+  --agua: rgb(152,208,180);
+  --jade: rgb(0,102,94);
+  --cielo: rgb(73,188,166);
+  --bosque: rgb(07,53,54);
+  --sol: rgb(251,192,64);
+  
+  --darkerSol: rgb(155, 109, 9);
+}
+
+
+.agua{
+  background-color: var(--agua);
+}
+
+
+.jade{
+  background-color: var(--jade);
+}
+
+
+.cielo{
+  background-color: var(--cielo);
+}
+
+
+.bosque{
+  background-color: var(--bosque);
+}
+
+
+.sol{
+  background-color: var(--sol);
+}
+
 .showMenu {
   display: block !important;
 }
+

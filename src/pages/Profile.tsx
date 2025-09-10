@@ -47,7 +47,7 @@ function Profile() {
         <select
           value={menuSeleccionado}
           onChange={(e) => setMenuSeleccionado(e.target.value)}
-          className="bg-white border border-gray-300 rounded-lg px-4 py-2 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="bg-white border border-gray-300 rounded-lg px-4 py-2 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--cielo)]"
         >
           <option value="default" >--Selecciona una opción--</option>
           <option value="editar">Editar Perfil</option>

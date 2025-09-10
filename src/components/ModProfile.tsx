@@ -142,7 +142,7 @@ export function ModProfile() {
           placeholder="Nuevo nombre"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
-          className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--cielo)]"
         />
       </div>
 
@@ -177,12 +177,12 @@ export function ModProfile() {
           placeholder="Nueva contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--cielo)]"
         />
       </div>
 
       {/* Subir foto */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 self-center">
         <label
           htmlFor="inputPhoto"
           className="text-sm font-medium text-gray-700"
@@ -193,14 +193,14 @@ export function ModProfile() {
           type="file"
           id="inputPhoto"
           onChange={handleFileChange}
-          className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-600 file:text-white hover:file:bg-green-700"
+          className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[var(--cielo)] file:text-white hover:file:bg-[var(--jade)] cursor-pointer"
         />
       </div>
 
       {/* Botón */}
       <button
         type="submit"
-        className="bg-green-600 text-white py-2 px-6 rounded-md hover:bg-green-700 transition duration-200 font-semibold"
+        className="bg-[var(--jade)] text-white py-2 px-6 rounded-md hover:bg-[var(--bosque)] transition duration-200 font-semibold cursor-pointer"
       >
         Actualizar Perfil
       </button>

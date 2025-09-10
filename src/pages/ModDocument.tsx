@@ -377,7 +377,7 @@ function ModDocument() {
             <div className="pt-6 text-right">
               <button
                 type="submit"
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md shadow"
+                className="bg-[var(--cielo)] hover:bg-[var(--jade)] cursor-pointer text-white px-6 py-2 rounded-md shadow"
               >
                 Guardar Cambios
               </button>
