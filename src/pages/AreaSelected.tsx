@@ -38,12 +38,12 @@ function AreaSelected() {
         <h1 className="text-3xl mb-8 text-center capitalize">
           Área: {area?.replace(/_/g, " ")}
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 ">
           {DOCUMENT_TYPES.map(({ key, label, Icon }) => (
             <button
               key={key}
               onClick={() => handleClick(key)}
-              className="group flex flex-col items-center justify-center bg-yellow-600 hover:bg-yellow-700 text-white rounded-xl p-8 shadow-lg transition duration-300"
+              className="group flex flex-col items-center justify-center bg-[var(--sol)] hover:bg-[var(--darkerSol)] text-blacvk rounded-xl p-8 shadow-lg transition duration-300 hover:cursor-pointer hover:text-white"
             >
               <Icon size={48} className="mb-4 group-hover:scale-110 transition-transform duration-300" />
               <span className="text-lg font-semibold uppercase">{label}</span>
